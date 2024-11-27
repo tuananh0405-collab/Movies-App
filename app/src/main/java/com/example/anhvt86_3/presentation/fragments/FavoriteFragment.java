@@ -89,9 +89,12 @@ public class FavoriteFragment extends Fragment {
             Movie movie = (Movie) v.getTag();
             Bundle bundle = new Bundle();
             bundle.putInt("movieId", movie.getId());
+            bundle.putBoolean("isFavorite", true);
             NavController navController = Navigation.findNavController(requireView());
             navController.navigate(R.id.detailFragment, bundle);
         });
+
+
         return binding.getRoot();
     }
 

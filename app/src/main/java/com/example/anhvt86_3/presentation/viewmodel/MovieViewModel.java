@@ -13,7 +13,9 @@ import com.example.anhvt86_3.domain.model.Movie;
 import com.example.anhvt86_3.domain.model.Settings;
 import com.example.anhvt86_3.domain.usecase.GetMoviesUseCase;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -63,6 +65,8 @@ public class MovieViewModel extends ViewModel {
 
     public void updateMovie(Movie movie) {
         mGetMoviesUseCase.updateMovie(movie);
+//        favoriteIconLiveData.setValue();
+        updateFavoriteIcon(movie.getId(), movie.isFavorite());
         // Update the movie list
         getMovieList(); // Reload the data
     }
@@ -115,6 +119,20 @@ public class MovieViewModel extends ViewModel {
             favoriteCountLiveData.setValue(favoriteMovies.size());
         } else {
             favoriteCountLiveData.setValue(0);
+        }
+    }
+
+    private final MutableLiveData<Map<Integer, Boolean>> favoriteIconLiveData = new MutableLiveData<>(new HashMap<>());
+
+    public MutableLiveData<Map<Integer, Boolean>> getFavoriteIconLiveData() {
+        return favoriteIconLiveData;
+    }
+
+    public void updateFavoriteIcon(int movieId, boolean isFavorite) {
+        Map<Integer, Boolean> currentStatus = favoriteIconLiveData.getValue();
+        if (currentStatus != null) {
+            currentStatus.put(movieId, isFavorite);
+            favoriteIconLiveData.setValue(currentStatus);
         }
     }
 }

@@ -118,6 +118,7 @@ public void onAttach(@NonNull Context context) {
             Movie movie = (Movie) view.getTag();
             Bundle bundle = new Bundle();
             bundle.putInt("movieId", movie.getId());
+            bundle.putBoolean("isFavorite", movie.isFavorite());
             NavController navController = Navigation.findNavController(requireView());
             navController.navigate(R.id.detailFragment, bundle);
         });

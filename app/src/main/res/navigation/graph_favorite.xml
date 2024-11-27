@@ -16,6 +16,9 @@
         <argument
             android:name="movieId"
             app:argType="integer" />
+        <argument
+            android:name="isFavorite"
+            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/detailFragment"

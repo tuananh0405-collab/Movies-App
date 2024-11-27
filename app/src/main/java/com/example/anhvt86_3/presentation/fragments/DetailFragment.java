@@ -45,6 +45,7 @@ public class DetailFragment extends Fragment {
 ////    FavoriteMovieDatabase favoriteMovieDatabase;
     private int movieId;
     private String movieTitle="Movie Detail";
+    private boolean isFavorite;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -69,13 +70,16 @@ public class DetailFragment extends Fragment {
         // Lấy movieId từ arguments
         if (getArguments() != null) {
             movieId = getArguments().getInt("movieId");
+            isFavorite = getArguments().getBoolean("isFavorite");
+
             Log.e("movieId", movieId + "");
             // Quan sát LiveData
             movieViewModel.getMovieDetails(movieId).observe(getViewLifecycleOwner(), movie -> {
                 if (movie != null) {
+                    movie.setFavorite(isFavorite);
                     binding.setMovie(movie); // Cập nhật dữ liệu vào binding
                     binding.icFavorite.setImageResource(movie.isFavorite() ? R.drawable.ic_like : R.drawable.ic_dislike);
-                    Log.e("movie", movie.toString());
+//                    Log.e("movie", movie.toString());
                     movieTitle = movie.getTitle();
                     ((MainActivity) requireActivity()).getSupportActionBar().setTitle(movie.getTitle());
                 } else {
@@ -96,10 +100,21 @@ public class DetailFragment extends Fragment {
             binding.icFavorite.setOnClickListener(view1 -> {
                 Movie movie = binding.getMovie();
                 movie.setFavorite(!movie.isFavorite());
-                Log.e("movie", movie.toString());
+                Log.e("movie update", movie.toString());
                 movieViewModel.updateMovie(movie); // Update ViewModel
-
+                binding.icFavorite.setImageResource(movie.isFavorite() ? R.drawable.ic_like : R.drawable.ic_dislike);  // Update the favorite icon immediately
             });
+
+            movieViewModel.getFavoriteIconLiveData().observe(getViewLifecycleOwner(), isFavorite -> {
+                Log.e("isFavorite", isFavorite + "");
+                if (isFavorite != null && isFavorite.containsKey(movieId)) {
+                    boolean isFavorite2 = isFavorite.get(movieId);
+                    binding.icFavorite.setImageResource(isFavorite2 ? R.drawable.ic_like : R.drawable.ic_dislike);
+                }
+            });
+//
+//
+
         }
     }
 
