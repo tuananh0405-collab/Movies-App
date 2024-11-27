@@ -19,6 +19,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 
+import com.example.anhvt86_3.R;
 import com.example.anhvt86_3.app.di.MyApplication;
 import com.example.anhvt86_3.databinding.FragmentFavoriteBinding;
 import com.example.anhvt86_3.domain.model.Movie;
@@ -83,9 +84,9 @@ public void onAttach(@NonNull Context context) {
         return binding.getRoot();
     }
 
-//    @Override
-//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 //
 //        adapter = new FavoriteMovieAdapter(favoriteMovieViewModel, this::onItemClick);
 //        binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -97,48 +98,48 @@ public void onAttach(@NonNull Context context) {
 //            }
 //        });
 //
-//        requireActivity().addMenuProvider(new MenuProvider() {
-//            @Override
-//            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-//                menuInflater.inflate(R.menu.menu_fav, menu);
-//                MenuItem searchItem = menu.findItem(R.id.action_search);
-//                SearchView searchView = (SearchView) searchItem.getActionView();
-//                searchView.setQueryHint("Search Favorites");
-//
-//                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//                    @Override
-//                    public boolean onQueryTextSubmit(String query) {
-//                        filterFavoriteMovies(query);
-//                        return false;
-//                    }
-//
-//                    @Override
-//                    public boolean onQueryTextChange(String newText) {
-//                        filterFavoriteMovies(newText);
-//                        return false;
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-//                return false;
-//            }
-//        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
-//    }
-//    private void filterFavoriteMovies(String query) {
-//        favoriteMovieViewModel.getAllFavoriteMovies().observe(getViewLifecycleOwner(), movieListFavor -> {
-//            if (movieListFavor != null) {
-//                List<Movie> filteredList = new ArrayList<>();
-//                for (Movie movie : movieListFavor) {
-//                    if (movie.getTitle().toLowerCase().contains(query.toLowerCase())) {
-//                        filteredList.add(movie);
-//                    }
-//                }
-//                adapter.submitList(filteredList);
-//            }
-//        });
-//    }
+        requireActivity().addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.menu_fav, menu);
+                MenuItem searchItem = menu.findItem(R.id.action_search);
+                SearchView searchView = (SearchView) searchItem.getActionView();
+                searchView.setQueryHint("Search Favorites");
+
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        filterFavoriteMovies(query);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        filterFavoriteMovies(newText);
+                        return false;
+                    }
+                });
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                return false;
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+    }
+    private void filterFavoriteMovies(String query) {
+        movieViewModel.getFavoriteMovies().observe(getViewLifecycleOwner(), movieListFavor -> {
+            if (movieListFavor != null) {
+                List<Movie> filteredList = new ArrayList<>();
+                for (Movie movie : movieListFavor) {
+                    if (movie.getTitle().toLowerCase().contains(query.toLowerCase())) {
+                        filteredList.add(movie);
+                    }
+                }
+                adapter.submitList(filteredList);
+            }
+        });
+    }
 //    private void onItemClick(Movie movie) {
 //        Bundle bundle = new Bundle();
 //        bundle.putInt("movieId", movie.getId());

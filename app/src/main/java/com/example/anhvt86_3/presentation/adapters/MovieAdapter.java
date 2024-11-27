@@ -21,7 +21,7 @@ import java.util.List;
 
 public class MovieAdapter extends PagingDataAdapter<Movie, RecyclerView.ViewHolder> {
 
-    private static final int TYPE_PROGRESS = 0;
+    public static final int TYPE_PROGRESS = 0;
     private static final int TYPE_ITEM = 1;
 
     public static final String BASE_IMG_URL = "https://image.tmdb.org/t/p/original";
@@ -29,13 +29,22 @@ public class MovieAdapter extends PagingDataAdapter<Movie, RecyclerView.ViewHold
     private boolean isLoading = false;
 
     private View.OnClickListener onFavClickListener;
+    private View.OnClickListener onItemClickListener;
 
     public void setOnFavClickListener(View.OnClickListener onFavClickListener) {
         this.onFavClickListener = onFavClickListener;
     }
 
+    public void setOnItemClickListener(View.OnClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
     public MovieAdapter(boolean isGrid) {
         super(DIFF_CALLBACK);
+        this.isGrid = isGrid;
+    }
+
+    public void setGrid(boolean isGrid) {
         this.isGrid = isGrid;
     }
 
@@ -74,6 +83,10 @@ public class MovieAdapter extends PagingDataAdapter<Movie, RecyclerView.ViewHold
                     .placeholder(R.drawable.ic_launcher_background)
                     .error(R.drawable.err_image)
                     .into(viewHolder.itemViewBinding.moviePoster);
+
+            viewHolder.itemViewBinding.getRoot().setTag(movie);
+            viewHolder.itemViewBinding.getRoot().setOnClickListener(onItemClickListener);
+
         } else {
             MovieListViewHolder viewHolder = (MovieListViewHolder) holder;
             viewHolder.itemBinding.setMovie(movie);
@@ -84,6 +97,8 @@ public class MovieAdapter extends PagingDataAdapter<Movie, RecyclerView.ViewHold
 
             viewHolder.itemBinding.favouriteStar.setTag(movie);
             viewHolder.itemBinding.favouriteStar.setOnClickListener(onFavClickListener);
+            viewHolder.itemBinding.getRoot().setTag(movie);
+            viewHolder.itemBinding.getRoot().setOnClickListener(onItemClickListener);
         }
 
     }

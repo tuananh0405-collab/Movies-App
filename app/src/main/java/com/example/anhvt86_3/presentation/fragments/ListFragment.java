@@ -16,6 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.paging.LoadState;
 import androidx.paging.PagingData;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -23,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.example.anhvt86_3.R;
 import com.example.anhvt86_3.app.di.MyApplication;
 import com.example.anhvt86_3.databinding.FragmentListBinding;
 import com.example.anhvt86_3.domain.model.Movie;
@@ -111,13 +114,21 @@ public void onAttach(@NonNull Context context) {
             }
         });
 
+        adapter.setOnItemClickListener(view -> {
+            Movie movie = (Movie) view.getTag();
+            Bundle bundle = new Bundle();
+            bundle.putInt("movieId", movie.getId());
+            NavController navController = Navigation.findNavController(requireView());
+            navController.navigate(R.id.detailFragment, bundle);
+        });
+
 
         return binding.getRoot();
     }
 
-//    @Override
-//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 //        ((MainActivity) requireActivity()).getAppComponent().inject(this);
 //
 //        adapter = new MovieAdapter(this::onItemClick,requireContext(), isGrid, favoriteMovieViewModel);
@@ -136,49 +147,49 @@ public void onAttach(@NonNull Context context) {
 //            }
 //            return null;
 //        });
-//        requireActivity().addMenuProvider(new MenuProvider() {
-//            @Override
-//            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-//                menuInflater.inflate(R.menu.menu_list, menu);
-//            }
-//
-//            @Override
-//            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-//                if (menuItem.getItemId() == R.id.action_switch_view) {
-//                    handleSwitchView(menuItem); // Call the method to switch views
-//                    return true;
-//                }
-//                return false;
-//            }
-//        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
-//    }
-//    private void handleSwitchView(MenuItem menuItem) {
-//        int currentPosition = ((LinearLayoutManager) binding.rcvMovie.getLayoutManager()).findFirstVisibleItemPosition();
-//
-//        isGrid = !isGrid;
-//
-//        RecyclerView.LayoutManager layoutManager;
-//        if (!isGrid) {
-//            layoutManager = new LinearLayoutManager(requireContext());
-//        } else {
-//            GridLayoutManager gridLayoutManager = new GridLayoutManager(requireContext(), 2);
-//            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-//                @Override
-//                public int getSpanSize(int position) {
-//                    return adapter.getItemViewType(position) == MovieAdapter.TYPE_PROGRESS ? 2 : 1;
-//                }
-//            });
-//            layoutManager = gridLayoutManager;
-//        }
-//        adapter.setGrid(isGrid);
-//
-//        binding.rcvMovie.setLayoutManager(layoutManager);
-//        binding.rcvMovie.setAdapter(adapter);
-//        binding.rcvMovie.scrollToPosition(currentPosition);
-//
-//        menuItem.setTitle(!isGrid ? "Switch to Grid View" : "Switch to List View");
-//        menuItem.setIcon(!isGrid ? R.drawable.ic_list : R.drawable.ic_grid);
-//    }
+        requireActivity().addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.menu_list, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.action_switch_view) {
+                    handleSwitchView(menuItem); // Call the method to switch views
+                    return true;
+                }
+                return false;
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+    }
+    private void handleSwitchView(MenuItem menuItem) {
+        int currentPosition = ((LinearLayoutManager) binding.rcvMovie.getLayoutManager()).findFirstVisibleItemPosition();
+
+        mIsGrid = !mIsGrid;
+
+        RecyclerView.LayoutManager layoutManager;
+        if (!mIsGrid) {
+            layoutManager = new LinearLayoutManager(requireContext());
+        } else {
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(requireContext(), 2);
+            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    return adapter.getItemViewType(position) == MovieAdapter.TYPE_PROGRESS ? 2 : 1;
+                }
+            });
+            layoutManager = gridLayoutManager;
+        }
+        adapter.setGrid(mIsGrid);
+
+        binding.rcvMovie.setLayoutManager(layoutManager);
+        binding.rcvMovie.setAdapter(adapter);
+        binding.rcvMovie.scrollToPosition(currentPosition);
+
+        menuItem.setTitle(!mIsGrid ? "Switch to Grid View" : "Switch to List View");
+        menuItem.setIcon(!mIsGrid ? R.drawable.ic_list : R.drawable.ic_grid);
+    }
 //
 //    public void setupRecyclerView() {
 //        binding.rcvMovie.setLayoutManager(isGrid
@@ -197,12 +208,12 @@ public void onAttach(@NonNull Context context) {
 //        });
 //    }
 //
-//    private void onItemClick(Movie movie) {
-//        Bundle bundle = new Bundle();
-//        bundle.putInt("movieId", movie.getId());
-//        NavController navController = Navigation.findNavController(requireView());
-//        navController.navigate(R.id.detailFragment, bundle);
-//    }
+    private void onItemClick(Movie movie) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("movieId", movie.getId());
+        NavController navController = Navigation.findNavController(requireView());
+        navController.navigate(R.id.detailFragment, bundle);
+    }
 
     public void setupRecyclerView(boolean isGrid) {
         adapter = new MovieAdapter(isGrid);
