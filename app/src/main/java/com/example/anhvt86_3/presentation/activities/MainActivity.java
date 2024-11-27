@@ -21,8 +21,10 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.anhvt86_3.R;
 import com.example.anhvt86_3.app.di.MyApplication;
 import com.example.anhvt86_3.databinding.ActivityMainBinding;
+import com.example.anhvt86_3.databinding.NavHeaderBinding;
 import com.example.anhvt86_3.presentation.adapters.ViewPagerAdapter;
 import com.example.anhvt86_3.presentation.viewmodel.MovieViewModel;
+import com.example.anhvt86_3.presentation.viewmodel.ProfileViewModel;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -34,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
     private NavController currentNavController;
     @Inject
     MovieViewModel movieViewModel;
+    @Inject
+    ProfileViewModel profileViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +113,26 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
         int movieRating = sharedPreferences.getInt("movie_rating", 5); // Giá trị mặc định là 5
         String releaseYear = sharedPreferences.getString("release_year", "2024"); // Giá trị mặc định là rỗng
         movieViewModel.updateSettings(category, sort, Integer.parseInt(pagesPerLoading), movieRating, releaseYear);
+
+        NavHeaderBinding navHeaderBinding = NavHeaderBinding.bind(
+                binding.navigationView.getHeaderView(0)
+        );
+
+        navHeaderBinding.btnEditProfile.setOnClickListener(view -> {
+            currentNavController.navigate(R.id.profileFragment);
+            drawerLayout.close();
+        });
+
+        navHeaderBinding.btnShowReminders.setOnClickListener(view -> {
+            currentNavController.navigate(R.id.reminderFragment);
+            drawerLayout.close();
+        });
+
+        profileViewModel.getUserProfileLiveData().observe(this, userProfile -> {
+            if (userProfile != null) {
+                navHeaderBinding.setProfile(userProfile);
+            }
+        });
     }
 
     private void setAppBarNavigation(ViewPagerAdapter adapter, int position) {

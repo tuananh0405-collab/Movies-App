@@ -9,10 +9,13 @@ import androidx.paging.PagingConfig;
 import androidx.paging.PagingData;
 import androidx.paging.rxjava2.PagingRx;
 
+import com.example.anhvt86_3.app.utils.Constants;
 import com.example.anhvt86_3.data.datasource.local.AppDatabase;
 import com.example.anhvt86_3.data.datasource.local.dao.MovieDAO;
 import com.example.anhvt86_3.data.datasource.local.entity.MovieEntity;
 import com.example.anhvt86_3.data.datasource.remote.MoviePagingSource;
+import com.example.anhvt86_3.data.datasource.remote.MovieRetrofitAPI;
+import com.example.anhvt86_3.data.datasource.remote.response.CreditsResponse;
 import com.example.anhvt86_3.data.mapper.MovieMapper;
 import com.example.anhvt86_3.domain.model.Movie;
 import com.example.anhvt86_3.domain.model.Settings;
@@ -25,6 +28,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 import kotlinx.coroutines.CoroutineScope;
 
 public class MovieRepositoryImpl implements IMovieRepository {
@@ -40,10 +44,12 @@ public class MovieRepositoryImpl implements IMovieRepository {
     private List<MovieEntity> favoriteMovies = new ArrayList<>();
 
     private final Provider<MoviePagingSource> movieRemoteDataSourceProvider;
+    private final MovieRetrofitAPI retrofitAPI;
 
     @Inject
-    public MovieRepositoryImpl(Provider<MoviePagingSource> movieRemoteDataSourceProvider, Application application) {
+    public MovieRepositoryImpl(Provider<MoviePagingSource> movieRemoteDataSourceProvider, Application application, MovieRetrofitAPI retrofitAPI) {
         this.movieRemoteDataSourceProvider = movieRemoteDataSourceProvider;
+        this.retrofitAPI = retrofitAPI;
         AppDatabase database = AppDatabase.getInstance(application);
         mMovieDAO = database.movieDAO();
         mMovieDAO.getAllMovies().observeForever(favMovies -> {
@@ -95,4 +101,13 @@ public class MovieRepositoryImpl implements IMovieRepository {
         }
     }
 
+
+    @Override
+    public Single<Movie> getMovieDetails(int movieId) {
+        return retrofitAPI.getMovieDetails(movieId, Constants.API_KEY);
+    }
+    @Override
+    public Single<CreditsResponse> getMovieCredits(int movieId) {
+        return retrofitAPI.getMovieCredits(movieId, Constants.API_KEY);
+    }
 }

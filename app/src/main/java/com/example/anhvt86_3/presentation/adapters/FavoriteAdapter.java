@@ -18,7 +18,10 @@ import com.squareup.picasso.Picasso;
 public class FavoriteAdapter extends ListAdapter<Movie, FavoriteAdapter.MovieListViewHolder> {
     public static final String BASE_IMG_URL = "https://image.tmdb.org/t/p/original";
     private View.OnClickListener onFavClickListener;
-
+    private View.OnClickListener onItemClickListener;
+    public void setOnItemClickListener(View.OnClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
     public void setOnFavClickListener(View.OnClickListener onFavClickListener) {
         this.onFavClickListener = onFavClickListener;
     }
@@ -58,6 +61,8 @@ public class FavoriteAdapter extends ListAdapter<Movie, FavoriteAdapter.MovieLis
 
         holder.itemBinding.favouriteStar.setTag(movie);
         holder.itemBinding.favouriteStar.setOnClickListener(onFavClickListener);
+        holder.itemBinding.getRoot().setTag(movie);
+        holder.itemBinding.getRoot().setOnClickListener(onItemClickListener);
     }
 
     public static class MovieListViewHolder extends RecyclerView.ViewHolder {

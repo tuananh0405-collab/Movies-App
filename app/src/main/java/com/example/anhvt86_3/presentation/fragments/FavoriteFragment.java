@@ -16,6 +16,8 @@ import androidx.appcompat.widget.SearchView;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 
@@ -39,7 +41,8 @@ public class FavoriteFragment extends Fragment {
     @Inject
     MovieViewModel movieViewModel;
     private FavoriteAdapter adapter;
-//    private FavoriteMovieAdapter adapter;
+
+    //    private FavoriteMovieAdapter adapter;
 //
 //    @Inject
 //    FavoriteMovieViewModel favoriteMovieViewModel;
@@ -54,11 +57,12 @@ public class FavoriteFragment extends Fragment {
 //        ((MyApplication) requireActivity().getApplication()).getAppComponent().inject(this);
 //
 //    }
-@Override
-public void onAttach(@NonNull Context context) {
-    super.onAttach(context);
-    ((MyApplication) requireContext().getApplicationContext()).appComponent.inject(this);
-}
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        ((MyApplication) requireContext().getApplicationContext()).appComponent.inject(this);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -80,6 +84,13 @@ public void onAttach(@NonNull Context context) {
             if (pos != -1) {
                 adapter.notifyItemChanged(pos);
             }
+        });
+        adapter.setOnItemClickListener(v -> {
+            Movie movie = (Movie) v.getTag();
+            Bundle bundle = new Bundle();
+            bundle.putInt("movieId", movie.getId());
+            NavController navController = Navigation.findNavController(requireView());
+            navController.navigate(R.id.detailFragment, bundle);
         });
         return binding.getRoot();
     }
@@ -127,6 +138,7 @@ public void onAttach(@NonNull Context context) {
             }
         }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
     }
+
     private void filterFavoriteMovies(String query) {
         movieViewModel.getFavoriteMovies().observe(getViewLifecycleOwner(), movieListFavor -> {
             if (movieListFavor != null) {

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelKt;
 import androidx.paging.PagingData;
 
+import com.example.anhvt86_3.data.datasource.remote.response.CreditsResponse;
 import com.example.anhvt86_3.domain.model.Movie;
 import com.example.anhvt86_3.domain.model.Settings;
 import com.example.anhvt86_3.domain.usecase.GetMoviesUseCase;
@@ -86,5 +87,18 @@ public class MovieViewModel extends ViewModel {
             settings.setValue(builder.build());
         }
         getMovieList();
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        mCompositeDisposable.clear();
+    }
+
+    public LiveData<Movie> getMovieDetails(int movieId) {
+        return mGetMoviesUseCase.getMovieDetails(movieId);
+    }
+    public LiveData<CreditsResponse> getMovieCredits(int movieId) {
+        return mGetMoviesUseCase.getMovieCredits(movieId);
     }
 }
