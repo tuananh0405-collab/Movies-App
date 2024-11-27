@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimaryDark">#FF6600</color> <!-- Cam đậm -->
+    <color name="colorPrimary">#FF7700</color> <!-- Cam chính -->
+    <color name="colorSecondary">#A9A9A9</color> <!-- Xám -->
+    <color name="colorSecondaryVariant">#F1F1F1</color> <!-- Xám nhạt -->
+    <color name="icons">#FFFFFF</color> <!-- Trắng -->
+    <color name="divider">#A9A9A9</color> <!-- Xám đậm -->
+    <color name="black">#000000</color> <!-- Đen -->
+    <color name="white">#FFFFFF</color> <!-- Trắng -->
+    <color name="gray">#A9A9A9</color> <!-- Xám đậm -->
+    <color name="colorAccent">#FF6600</color> <!-- Cam nổi bật -->
+    <color name="AliceBlue">#F1F1F1</color> <!-- Xám nhạt -->
+    <color name="DarkGray">#4F4F4F</color> <!-- Xám đậm hơn -->
+    <color name="White">#FFFFFF</color> <!-- Trắng -->
+
+</resources>

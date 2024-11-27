@@ -1,0 +1,88 @@
+package com.example.anhvt86_3.presentation.viewmodel;
+
+import android.util.Log;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelKt;
+import androidx.paging.PagingData;
+
+import com.example.anhvt86_3.domain.model.Movie;
+import com.example.anhvt86_3.domain.model.Settings;
+import com.example.anhvt86_3.domain.usecase.GetMoviesUseCase;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
+@Singleton
+public class MovieViewModel extends ViewModel {
+    private MutableLiveData<PagingData<Movie>> mMovieListLiveData = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mIsGrid = new MutableLiveData<>();
+    private final CompositeDisposable mCompositeDisposable;
+    private final GetMoviesUseCase mGetMoviesUseCase;
+    private LiveData<List<Movie>> mFavoriteMoviesLiveData;
+
+    @Inject
+    public MovieViewModel(GetMoviesUseCase getMoviesUseCase) {
+        mGetMoviesUseCase = getMoviesUseCase;
+        mCompositeDisposable = new CompositeDisposable();
+    }
+
+    public MutableLiveData<PagingData<Movie>> getMovieList() {
+        Disposable disposable = mGetMoviesUseCase.getMoviesFromAPI(ViewModelKt.getViewModelScope(this), settings.getValue())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        mMovieListLiveData::setValue,
+                        throwable -> Log.d("FATAL", "getMoviePagingData: " + throwable)
+                );
+        mCompositeDisposable.add(disposable);
+
+        return mMovieListLiveData;
+    }
+
+    public MutableLiveData<Boolean> getIsGrid() {
+        return mIsGrid;
+    }
+
+    public void setIsGrid(boolean isGrid) {
+        mIsGrid.setValue(isGrid);
+    }
+
+    public void updateMovie(Movie movie) {
+        mGetMoviesUseCase.updateMovie(movie);
+        // Update the movie list
+        getMovieList(); // Reload the data
+    }
+
+    public LiveData<List<Movie>> getFavoriteMovies() {
+        if (mFavoriteMoviesLiveData == null) {
+            mFavoriteMoviesLiveData = mGetMoviesUseCase.getFavMovies();
+        }
+        return mFavoriteMoviesLiveData;
+    }
+
+    private final MutableLiveData<Settings> settings = new MutableLiveData<>(new Settings());
+    public MutableLiveData<Settings> getSettings() {
+        return settings;
+    }
+    public void updateSettings(String movieCategoryFilter, String sortOption, int pagesPerLoading) {
+        Settings builder = settings.getValue();
+        if (builder != null) {
+            builder.setCategorySetting(movieCategoryFilter)
+                    .setSortSetting(sortOption)
+                    .setPagesPerLoadingSetting(pagesPerLoading);
+
+            settings.setValue(builder.build());
+        }
+        getMovieList();
+    }
+}
