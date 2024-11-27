@@ -82,7 +82,19 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
             BadgeDrawable badgeDrawable = binding.tabLayout.getTabAt(1).getOrCreateBadge();
             badgeDrawable.setVisible(false); // Initially hidden
         }
-
+        movieViewModel.getFavoriteCountLiveData().observe(this, count -> {
+            if (count > 0) {
+                if (favoriteTab != null) {
+                    BadgeDrawable badge = favoriteTab.getOrCreateBadge();
+                    if (count > 0) {
+                        badge.setVisible(true);
+                        badge.setNumber(count);
+                    } else {
+                        badge.setVisible(false);
+                    }
+                }
+            }
+        });
         // Tab size
         for (int i = 0; i < binding.tabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = binding.tabLayout.getTabAt(i);

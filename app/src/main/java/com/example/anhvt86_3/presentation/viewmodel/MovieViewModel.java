@@ -35,6 +35,9 @@ public class MovieViewModel extends ViewModel {
     public MovieViewModel(GetMoviesUseCase getMoviesUseCase) {
         mGetMoviesUseCase = getMoviesUseCase;
         mCompositeDisposable = new CompositeDisposable();
+        getFavoriteMovies();
+        mFavoriteMoviesLiveData.observeForever(movies -> updateFavoriteCount());
+
     }
 
     public MutableLiveData<PagingData<Movie>> getMovieList() {
@@ -100,5 +103,18 @@ public class MovieViewModel extends ViewModel {
     }
     public LiveData<CreditsResponse> getMovieCredits(int movieId) {
         return mGetMoviesUseCase.getMovieCredits(movieId);
+    }
+
+    private final MutableLiveData<Integer> favoriteCountLiveData = new MutableLiveData<>(0);
+    public MutableLiveData<Integer> getFavoriteCountLiveData() {
+        return favoriteCountLiveData;
+    }
+    private void updateFavoriteCount() {
+        List<Movie> favoriteMovies = mFavoriteMoviesLiveData.getValue();
+        if (favoriteMovies != null) {
+            favoriteCountLiveData.setValue(favoriteMovies.size());
+        } else {
+            favoriteCountLiveData.setValue(0);
+        }
     }
 }
