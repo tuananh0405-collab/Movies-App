@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="com.example.anhvt86_3.app.utils.Functionutils"/>
 
         <variable
             name="movie"
@@ -28,7 +29,8 @@
                 android:id="@+id/ic_favorite"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@{movie.isFavorite ? @drawable/ic_like : @drawable/ic_dislike}" />
+                app:imageResource="@{Functionutils.displayStar(movie.isFavorite)}"
+                />
 
             <LinearLayout
                 android:layout_width="0dp"

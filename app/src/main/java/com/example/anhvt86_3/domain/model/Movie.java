@@ -150,4 +150,7 @@ public class Movie implements Parcelable {
                 movie.posterPath.equals(this.posterPath) &&
                 movie.isFavorite == this.isFavorite;
     }
+    public String getInformation() {
+        return this.title + " - " + this.releaseDate + " - " + this.rating + " - " + this.isFavorite;
+    }
 }

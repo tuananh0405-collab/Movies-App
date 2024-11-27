@@ -5,6 +5,7 @@ import com.example.anhvt86_3.presentation.fragments.DetailFragment;
 import com.example.anhvt86_3.presentation.fragments.FavoriteFragment;
 import com.example.anhvt86_3.presentation.fragments.ListFragment;
 import com.example.anhvt86_3.presentation.fragments.ProfileFragment;
+import com.example.anhvt86_3.presentation.fragments.ReminderFragment;
 import com.example.anhvt86_3.presentation.fragments.SettingsFragment;
 
 import javax.inject.Singleton;
@@ -21,4 +22,5 @@ public interface AppComponent {
     void inject(DetailFragment detailFragment);
     void inject(SettingsFragment fragment);
     void inject(ProfileFragment fragment);
+    void inject(ReminderFragment fragment);
 }

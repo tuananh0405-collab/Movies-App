@@ -20,9 +20,13 @@ import androidx.work.WorkManager;
 import com.example.anhvt86_3.R;
 import com.example.anhvt86_3.app.di.MyApplication;
 import com.example.anhvt86_3.databinding.FragmentDetailBinding;
+import com.example.anhvt86_3.domain.model.Movie;
+import com.example.anhvt86_3.domain.model.Reminder;
 import com.example.anhvt86_3.presentation.activities.MainActivity;
 import com.example.anhvt86_3.presentation.adapters.CastAndCrewAdapter;
 import com.example.anhvt86_3.presentation.viewmodel.MovieViewModel;
+import com.example.anhvt86_3.presentation.viewmodel.ReminderViewModel;
+import com.example.anhvt86_3.presentation.workmanager.ReminderWorker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,11 +39,12 @@ public class DetailFragment extends Fragment {
     private FragmentDetailBinding binding;
     @Inject
     MovieViewModel movieViewModel;
-    //    @Inject
-//    ReminderViewModel reminderViewModel;
+        @Inject
+        ReminderViewModel reminderViewModel;
 //    @Inject
 ////    FavoriteMovieDatabase favoriteMovieDatabase;
     private int movieId;
+    private String movieTitle="Movie Detail";
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -71,6 +76,7 @@ public class DetailFragment extends Fragment {
                     binding.setMovie(movie); // Cập nhật dữ liệu vào binding
                     binding.icFavorite.setImageResource(movie.isFavorite() ? R.drawable.ic_like : R.drawable.ic_dislike);
                     Log.e("movie", movie.toString());
+                    movieTitle = movie.getTitle();
                     ((MainActivity) requireActivity()).getSupportActionBar().setTitle(movie.getTitle());
                 } else {
                     Log.e("movie", "Movie details not found");
@@ -87,6 +93,13 @@ public class DetailFragment extends Fragment {
 
             binding.btnReminder.setOnClickListener(v -> showDateTimePicker());
 
+            binding.icFavorite.setOnClickListener(view1 -> {
+                Movie movie = binding.getMovie();
+                movie.setFavorite(!movie.isFavorite());
+                Log.e("movie", movie.toString());
+                movieViewModel.updateMovie(movie); // Update ViewModel
+
+            });
         }
     }
 
@@ -105,26 +118,37 @@ public class DetailFragment extends Fragment {
     }
 
     private void scheduleReminder(long reminderTime) {
-//        Reminder reminder = new Reminder(reminderTime, movieId);
-//        if(reminderViewModel.getReminderByMovieId(movieId) != null){
-//            reminderViewModel.updateReminder(reminder);
-//        }else {
-//
-//        reminderViewModel.insertReminder(reminder);
-//        }
-//
-//        // Tính toán khoảng thời gian chờ
-//        long delay = reminderTime - System.currentTimeMillis();
-//        if (delay > 0) {
-//            OneTimeWorkRequest reminderRequest = new OneTimeWorkRequest.Builder(ReminderWorker.class)
-//                    .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-//                    .setInputData(new Data.Builder()
-//                            .putString("movieTitle", binding.getMovie().getTitle()) // Truyền tiêu đề phim
-//                            .putInt("notificationId", movieId) // ID thông báo duy nhất
-//                            .build())
-//                    .build();
-//
-//            WorkManager.getInstance(requireContext()).enqueue(reminderRequest);
+        Reminder reminder = new Reminder(reminderTime, movieId);
+        if (reminderViewModel.getReminderByMovieId(movieId) != null) {
+            reminderViewModel.updateReminder(reminder);
+        } else {
+
+            reminderViewModel.insertReminder(reminder);
         }
+
+        // Tính toán khoảng thời gian chờ
+        long delay = reminderTime - System.currentTimeMillis();
+        if (delay > 0) {
+            OneTimeWorkRequest reminderRequest = new OneTimeWorkRequest.Builder(ReminderWorker.class)
+                    .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                    .setInputData(new Data.Builder()
+                            .putString("movieTitle", binding.getMovie().getTitle()) // Truyền tiêu đề phim
+                            .putInt("notificationId", movieId) // ID thông báo duy nhất
+                            .build())
+                    .build();
+//
+            WorkManager.getInstance(requireContext()).enqueue(reminderRequest);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Kiểm tra và cập nhật lại tiêu đề mỗi khi fragment quay lại
+        if (movieTitle != null) {
+            ((MainActivity) requireActivity()).getSupportActionBar().setTitle(movieTitle);
+        }
+    }
+
 
 }

@@ -1,5 +1,9 @@
 package com.example.anhvt86_3.presentation.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.LinearLayout;
@@ -16,18 +20,25 @@ import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.anhvt86_3.R;
 import com.example.anhvt86_3.app.di.MyApplication;
 import com.example.anhvt86_3.databinding.ActivityMainBinding;
 import com.example.anhvt86_3.databinding.NavHeaderBinding;
+import com.example.anhvt86_3.domain.model.Reminder;
+import com.example.anhvt86_3.presentation.adapters.ReminderAdapter;
 import com.example.anhvt86_3.presentation.adapters.ViewPagerAdapter;
 import com.example.anhvt86_3.presentation.viewmodel.MovieViewModel;
 import com.example.anhvt86_3.presentation.viewmodel.ProfileViewModel;
+import com.example.anhvt86_3.presentation.viewmodel.ReminderViewModel;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -38,6 +49,10 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
     MovieViewModel movieViewModel;
     @Inject
     ProfileViewModel profileViewModel;
+    @Inject
+    ReminderViewModel reminderViewModel;
+    ReminderAdapter reminderAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,8 +160,38 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
                 navHeaderBinding.setProfile(userProfile);
             }
         });
+        reminderAdapter = new ReminderAdapter(new ArrayList<>(), reminderViewModel, movieViewModel, true);
+        reminderAdapter.setLifecycleOwner(this);
+        navHeaderBinding.rcvReminder.setLayoutManager(new LinearLayoutManager(this));
+        navHeaderBinding.rcvReminder.setAdapter(reminderAdapter);
+        reminderViewModel.getAllReminders().observe(this, this::updateReminders);
+        // Đăng ký BroadcastReceiver
+        IntentFilter filter = new IntentFilter("UPDATE_REMINDERS");
+        registerReceiver(remindersUpdateReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+    }
+    private final BroadcastReceiver remindersUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int movieId = intent.getIntExtra("movieId", -1);
+            if (movieId != -1) {
+                reminderViewModel.deleteReminderByMovieId(movieId);
+            }
+            // Cập nhật lại dữ liệu từ ViewModel
+
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(remindersUpdateReceiver);
     }
 
+    private void updateReminders(List<Reminder> reminders) {
+        if (reminders != null) {
+            reminderAdapter.setRemindersNavHeader(reminders);
+        }
+    }
     private void setAppBarNavigation(ViewPagerAdapter adapter, int position) {
         try {
             for (MutableLiveData<NavController> navControllerLiveData : adapter.getNavControllerMap().values()) {
