@@ -93,7 +93,7 @@ public void onAttach(@NonNull Context context) {
                 Log.d("TAG", "onCreateView: " + settings.toString());
 //                mViewModel.updateSettings(settings.getCategorySetting(), settings.getSortSetting(), settings.getPagesPerLoadingSetting());
                 if (movies != null) {
-//                    mMovieListRVAdapter.submitData(getLifecycle(), movies);
+                    adapter.submitData(getLifecycle(), movies);
                     List<Movie> filteredList = new ArrayList<>();
 
                 }

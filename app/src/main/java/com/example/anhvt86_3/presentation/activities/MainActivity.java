@@ -106,7 +106,9 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
         String category = sharedPreferences.getString("filter_movie_category", "popular"); // Giá trị mặc định là "popular"
         String sort = sharedPreferences.getString("sort_option", "rating"); // Giá trị mặc định là "desc"
         String pagesPerLoading = sharedPreferences.getString("pages_per_loading", "1"); // Giá trị mặc định là 10
-        movieViewModel.updateSettings(category, sort, Integer.parseInt(pagesPerLoading));
+        int movieRating = sharedPreferences.getInt("movie_rating", 5); // Giá trị mặc định là 5
+        String releaseYear = sharedPreferences.getString("release_year", "2024"); // Giá trị mặc định là rỗng
+        movieViewModel.updateSettings(category, sort, Integer.parseInt(pagesPerLoading), movieRating, releaseYear);
     }
 
     private void setAppBarNavigation(ViewPagerAdapter adapter, int position) {

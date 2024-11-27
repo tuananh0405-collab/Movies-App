@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.SeekBarPreference;
 
 import com.example.anhvt86_3.R;
 import com.example.anhvt86_3.app.di.MyApplication;
@@ -32,7 +33,7 @@ MovieViewModel viewModel;
         if (filterCategoryPreference != null) {
             filterCategoryPreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 String filterValue = (String) newValue;
-                updateSettings(filterValue, null, null);
+                updateSettings(filterValue, null, null, null, null);
                 return true;
             });
         }
@@ -42,7 +43,7 @@ MovieViewModel viewModel;
         if (sortOptionPreference != null) {
             sortOptionPreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 String sortValue = (String) newValue;
-                updateSettings(null, sortValue, null);
+                updateSettings(null, sortValue, null, null, null);
                 return true;
             });
         }
@@ -53,7 +54,7 @@ MovieViewModel viewModel;
             pagesPerLoadingPreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 String pagesValue = (String) newValue;
                 int pagesPerLoading = Integer.parseInt(pagesValue);
-                updateSettings(null, null, pagesPerLoading);
+                updateSettings(null, null, pagesPerLoading, null, null);
                 return true;
             });
             // Hiển thị giá trị hiện tại trong phần summary
@@ -63,9 +64,38 @@ MovieViewModel viewModel;
             });
 
         }
+
+        // Movie Rating
+        SeekBarPreference movieRatingPreference = findPreference("movie_rating");
+        if (movieRatingPreference != null) {
+            movieRatingPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+                int ratingValue = (Integer) newValue;
+                updateSettings(null, null, null, ratingValue, null);
+                return true;
+            });
+            movieRatingPreference.setSummaryProvider(preference -> {
+                int rating = ((SeekBarPreference) preference).getValue();
+                return rating + "/10";  // Show rating as 0-10 scale
+            });
+        }
+
+        // Release Year
+        EditTextPreference releaseYearPreference = findPreference("release_year");
+        if (releaseYearPreference != null) {
+            releaseYearPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+                String releaseYearValue = (String) newValue;
+                updateSettings(null, null, null, null, releaseYearValue);
+                return true;
+            });
+            releaseYearPreference.setSummaryProvider(preference -> {
+                String value = ((EditTextPreference) preference).getText();
+                return value != null && !value.isEmpty() ? value : "Not set";
+            });
+        }
     }
 
-    private void updateSettings(@Nullable String filterCategory, @Nullable String sortOption, @Nullable Integer pagesPerLoading) {
+    private void updateSettings(@Nullable String filterCategory, @Nullable String sortOption, @Nullable Integer pagesPerLoading,
+                                @Nullable Integer movieRating, @Nullable String releaseYear) {
         // Retrieve current settings
         Settings currentSettings = viewModel.getSettings().getValue();
 
@@ -80,12 +110,20 @@ MovieViewModel viewModel;
             if (pagesPerLoading != null) {
                 currentSettings.setPagesPerLoadingSetting(pagesPerLoading);
             }
+            if (movieRating != null) {
+                currentSettings.setMovieRating(movieRating);
+            }
+            if (releaseYear != null) {
+                currentSettings.setReleaseYear(releaseYear);
+            }
 
             // Apply updated settings
             viewModel.updateSettings(
                     currentSettings.getCategorySetting(),
                     currentSettings.getSortSetting(),
-                    currentSettings.getPagesPerLoadingSetting()
+                    currentSettings.getPagesPerLoadingSetting(),
+                    currentSettings.getMovieRating(),
+                    currentSettings.getReleaseYear()
             );
         }
     }

@@ -14,7 +14,7 @@ public interface MovieRetrofitAPI {
     @GET("3/movie/popular?api_key=468cae1037cdafe395896a5ce170330c")
     Single<MovieResponse> getMovies(@Query("page") int page);
 
-    @GET("3/movie/{category}?api_key=468cae1037cdafe395896a5ce170330c")
+    @GET("3/movie/{category}?api_key=40790235e5cf4da229722802d55515db")
     Single<MovieResponse> getMovies2(@Path("category") String category, @Query("page") int page);
 
 }

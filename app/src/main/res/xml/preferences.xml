@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- Filter 1: Choose movie category -->
     <ListPreference
@@ -26,4 +27,23 @@
         android:summary="%s"
         android:title="No. pages per loading" />
 
+    <!-- Filter 4: Movie Rating -->
+    <SeekBarPreference
+        android:key="movie_rating"
+        android:defaultValue="5"
+        android:title="Movie Rating"
+        android:min="0"
+        android:max="10"
+        android:summary="%s"
+        app:showSeekBarValue="true"
+        />
+
+    <!-- Filter 5: Release Year -->
+    <EditTextPreference
+        android:key="release_year"
+        android:defaultValue=""
+        android:inputType="number"
+        android:title="Release Year"
+        android:summary="%s"
+        android:hint="Enter year (e.g., 2024)" />
 </PreferenceScreen>

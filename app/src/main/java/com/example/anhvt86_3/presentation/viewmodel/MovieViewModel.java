@@ -74,12 +74,14 @@ public class MovieViewModel extends ViewModel {
     public MutableLiveData<Settings> getSettings() {
         return settings;
     }
-    public void updateSettings(String movieCategoryFilter, String sortOption, int pagesPerLoading) {
+    public void updateSettings(String movieCategoryFilter, String sortOption, int pagesPerLoading, int movieRating, String releaseYear) {
         Settings builder = settings.getValue();
         if (builder != null) {
             builder.setCategorySetting(movieCategoryFilter)
                     .setSortSetting(sortOption)
-                    .setPagesPerLoadingSetting(pagesPerLoading);
+                    .setPagesPerLoadingSetting(pagesPerLoading)
+                    .setMovieRating(movieRating)
+                    .setReleaseYear(releaseYear);
 
             settings.setValue(builder.build());
         }

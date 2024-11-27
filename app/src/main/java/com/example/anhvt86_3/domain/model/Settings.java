@@ -4,6 +4,26 @@ public class Settings {
     private String categorySetting = "popular";
     private String sortSetting;
     private int pagesPerLoadingSetting = 1;
+    private int movieRating = 5;  // Default rating value (0-10)
+    private String releaseYear = "";  // Default empty string for release year
+
+    public int getMovieRating() {
+        return movieRating;
+    }
+
+    public Settings setMovieRating(int movieRating) {
+        this.movieRating = movieRating;
+        return this;
+    }
+
+    public String getReleaseYear() {
+        return releaseYear;
+    }
+
+    public Settings setReleaseYear(String releaseYear) {
+        this.releaseYear = releaseYear;
+        return this;
+    }
 
     public Settings setCategorySetting(String categorySetting) {
         this.categorySetting = categorySetting;
@@ -42,6 +62,8 @@ public class Settings {
                 "movieCategoryFilter='" + categorySetting + '\'' +
                 ", sortOption='" + sortSetting + '\'' +
                 ", pagesPerLoading=" + pagesPerLoadingSetting +
+                ", movieRating=" + movieRating +
+                ", releaseYear='" + releaseYear + '\'' +
                 '}';
     }
 
