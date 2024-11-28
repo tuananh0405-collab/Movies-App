@@ -41,8 +41,6 @@ public class DetailFragment extends Fragment {
     MovieViewModel movieViewModel;
         @Inject
         ReminderViewModel reminderViewModel;
-//    @Inject
-////    FavoriteMovieDatabase favoriteMovieDatabase;
     private int movieId;
     private String movieTitle="Movie Detail";
     private boolean isFavorite;
@@ -50,7 +48,6 @@ public class DetailFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-//        ((MainActivity) requireActivity()).getAppComponent().inject(this);
         ((MyApplication) requireContext().getApplicationContext()).appComponent.inject(this);
 
     }
@@ -65,8 +62,6 @@ public class DetailFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        ((MainActivity) requireActivity()).getAppComponent().inject(this);
-//
         // Lấy movieId từ arguments
         if (getArguments() != null) {
             movieId = getArguments().getInt("movieId");
@@ -77,20 +72,16 @@ public class DetailFragment extends Fragment {
             movieViewModel.getMovieDetails(movieId).observe(getViewLifecycleOwner(), movie -> {
                 if (movie != null) {
                     movie.setFavorite(isFavorite);
-                    binding.setMovie(movie); // Cập nhật dữ liệu vào binding
+                    binding.setMovie(movie);
                     binding.icFavorite.setImageResource(movie.isFavorite() ? R.drawable.ic_like : R.drawable.ic_dislike);
-//                    Log.e("movie", movie.toString());
                     movieTitle = movie.getTitle();
                     ((MainActivity) requireActivity()).getSupportActionBar().setTitle(movie.getTitle());
                 } else {
                     Log.e("movie", "Movie details not found");
                 }
             });
-//        }
-//
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
             binding.recyclerViewCastAndCrew.setLayoutManager(layoutManager);
-//
             CastAndCrewAdapter adapter = new CastAndCrewAdapter(new ArrayList<>());
             binding.recyclerViewCastAndCrew.setAdapter(adapter);
             movieViewModel.getMovieCredits(movieId).observe(getViewLifecycleOwner(), adapter::setCastMembers);
@@ -101,8 +92,8 @@ public class DetailFragment extends Fragment {
                 Movie movie = binding.getMovie();
                 movie.setFavorite(!movie.isFavorite());
                 Log.e("movie update", movie.toString());
-                movieViewModel.updateMovie(movie); // Update ViewModel
-                binding.icFavorite.setImageResource(movie.isFavorite() ? R.drawable.ic_like : R.drawable.ic_dislike);  // Update the favorite icon immediately
+                movieViewModel.updateMovie(movie);
+                binding.icFavorite.setImageResource(movie.isFavorite() ? R.drawable.ic_like : R.drawable.ic_dislike);
             });
 
             movieViewModel.getFavoriteIconLiveData().observe(getViewLifecycleOwner(), isFavorite -> {
@@ -112,8 +103,6 @@ public class DetailFragment extends Fragment {
                     binding.icFavorite.setImageResource(isFavorite2 ? R.drawable.ic_like : R.drawable.ic_dislike);
                 }
             });
-//
-//
 
         }
     }
@@ -147,11 +136,10 @@ public class DetailFragment extends Fragment {
             OneTimeWorkRequest reminderRequest = new OneTimeWorkRequest.Builder(ReminderWorker.class)
                     .setInitialDelay(delay, TimeUnit.MILLISECONDS)
                     .setInputData(new Data.Builder()
-                            .putString("movieTitle", binding.getMovie().getTitle()) // Truyền tiêu đề phim
-                            .putInt("notificationId", movieId) // ID thông báo duy nhất
+                            .putString("movieTitle", binding.getMovie().getTitle())
+                            .putInt("notificationId", movieId)
                             .build())
                     .build();
-//
             WorkManager.getInstance(requireContext()).enqueue(reminderRequest);
         }
     }
@@ -159,7 +147,6 @@ public class DetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // Kiểm tra và cập nhật lại tiêu đề mỗi khi fragment quay lại
         if (movieTitle != null) {
             ((MainActivity) requireActivity()).getSupportActionBar().setTitle(movieTitle);
         }

@@ -21,12 +21,11 @@ import com.example.anhvt86_3.presentation.viewmodel.ReminderViewModel;
 import java.util.List;
 
 public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.ReminderViewHolder> {
-    private static final String TAG = "TAGTAGTAG";
     private List<Reminder> reminders;
     private ReminderViewModel reminderViewModel;
     private MovieViewModel moviesViewModel;
     private LifecycleOwner lifecycleOwner;
-    private boolean isForNavHeader; // Cờ để kiểm tra
+    private boolean isForNavHeader;
 
     public void setLifecycleOwner(LifecycleOwner lifecycleOwner) {
         this.lifecycleOwner = lifecycleOwner;
@@ -60,7 +59,7 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
     public void onBindViewHolder(@NonNull ReminderViewHolder holder, int position) {
         Reminder reminder = reminders.get(position);
         holder.binding.setReminder(reminder);
-        // Ẩn nút xóa nếu ở NavHeader
+
         if (isForNavHeader) {
             holder.binding.imageDelete.setVisibility(View.GONE);
         } else {
@@ -69,7 +68,6 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
                 reminderViewModel.deleteReminderByMovieId(reminder.getMovieId());
             });
         }
-        Log.d(TAG, "onBindViewHolder: " + reminder.getMovieId());
         moviesViewModel.getMovieDetails(reminder.getMovieId()).observe(lifecycleOwner, new Observer<Movie>() {
             @Override
             public void onChanged(Movie movie) {

@@ -18,7 +18,6 @@ import java.util.List;
 
 public class CastAndCrewAdapter extends RecyclerView.Adapter<CastAndCrewAdapter.CastAndCrewViewHolder> {
 
-    private static final String TAG = "TAGTAGTAG";
     private List<CastMember> castMembers;
 
     public CastAndCrewAdapter(List<CastMember> castMembers) {
@@ -36,7 +35,6 @@ public class CastAndCrewAdapter extends RecyclerView.Adapter<CastAndCrewAdapter.
     @SuppressLint("NotifyDataSetChanged")
     public void setCastMembers(CreditsResponse creditsResponses) {
         this.castMembers = creditsResponses.getCast();
-        Log.d(TAG, "setCastMembers: " + castMembers.size());
         notifyDataSetChanged();
     }
 

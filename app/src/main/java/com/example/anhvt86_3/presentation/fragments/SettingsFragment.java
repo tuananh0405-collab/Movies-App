@@ -19,13 +19,11 @@ import javax.inject.Inject;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
-//private SettingsViewModel viewModel;
 @Inject
 MovieViewModel viewModel;
     @Override
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
         setPreferencesFromResource(R.xml.preferences, rootKey);
-//        viewModel = new ViewModelProvider(requireActivity()).get(SettingsViewModel.class);
         ((MyApplication) requireContext().getApplicationContext()).appComponent.inject(this);
 
         // Filter by movie category

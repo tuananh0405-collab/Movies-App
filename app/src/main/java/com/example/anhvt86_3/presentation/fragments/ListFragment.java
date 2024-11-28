@@ -43,31 +43,19 @@ public class ListFragment extends Fragment {
     private FragmentListBinding binding;
     private boolean mIsGrid;
     private MovieAdapter adapter;
-//    private boolean isGrid = false;
 private PagingData<Movie> movies;
-//
     @Inject
 MovieViewModel movieViewModel;
-//
-//    @Inject
-//    FavoriteMovieViewModel favoriteMovieViewModel;
-//
-//
-//
 @Override
 public void onAttach(@NonNull Context context) {
     super.onAttach(context);
-//        ((MainActivity) requireActivity()).getAppComponent().inject(this);
     ((MyApplication) requireContext().getApplicationContext()).appComponent.inject(this);
 
 }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        DaggerAppComponent.create().inject(this);
-//        mViewModel = new ViewModelProvider(requireActivity()).get(MovieListViewModel.class);
         mIsGrid = Boolean.TRUE.equals(movieViewModel.getIsGrid().getValue());
-        // Lắng nghe sự thay đổi cài đặt
 
     }
     @Override
@@ -94,7 +82,6 @@ public void onAttach(@NonNull Context context) {
         movieViewModel.getSettings().observe(getViewLifecycleOwner(), settings -> {
             if (settings != null) {
                 Log.d("TAG", "onCreateView: " + settings.toString());
-//                mViewModel.updateSettings(settings.getCategorySetting(), settings.getSortSetting(), settings.getPagesPerLoadingSetting());
                 if (movies != null) {
                     adapter.submitData(getLifecycle(), movies);
                     List<Movie> filteredList = new ArrayList<>();
@@ -130,24 +117,7 @@ public void onAttach(@NonNull Context context) {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        ((MainActivity) requireActivity()).getAppComponent().inject(this);
-//
-//        adapter = new MovieAdapter(this::onItemClick,requireContext(), isGrid, favoriteMovieViewModel);
-//        binding.rcvMovie.setAdapter(adapter);
-//        setupRecyclerView();
-//        observeMovies();
-//
-//        adapter.addLoadStateListener(loadState -> {
-//            if (loadState.getAppend() instanceof LoadState.Loading) {
-//                adapter.setNetworkState(new NetworkState(NetworkState.Status.LOADING, "Loading"));
-//            } else if (loadState.getAppend() instanceof LoadState.Error) {
-//                adapter.setNetworkState(new NetworkState(NetworkState.Status.LOADED, "Error"));
-//                Toast.makeText(getContext(), "Error loading more data", Toast.LENGTH_SHORT).show();
-//            } else {
-//                adapter.setNetworkState(new NetworkState(NetworkState.Status.LOADED, "Success"));
-//            }
-//            return null;
-//        });
+
         requireActivity().addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
@@ -157,7 +127,7 @@ public void onAttach(@NonNull Context context) {
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.action_switch_view) {
-                    handleSwitchView(menuItem); // Call the method to switch views
+                    handleSwitchView(menuItem);
                     return true;
                 }
                 return false;
@@ -191,30 +161,8 @@ public void onAttach(@NonNull Context context) {
         menuItem.setTitle(!mIsGrid ? "Switch to Grid View" : "Switch to List View");
         menuItem.setIcon(!mIsGrid ? R.drawable.ic_list : R.drawable.ic_grid);
     }
-//
-//    public void setupRecyclerView() {
-//        binding.rcvMovie.setLayoutManager(isGrid
-//                ? new GridLayoutManager(requireContext(), 2)
-//                : new LinearLayoutManager(requireContext()));
-//        binding.rcvMovie.setAdapter(adapter);
-//    }
-//
-//    private void observeMovies() {
-//        movieViewModel.getMovies().observe(getViewLifecycleOwner(), pagingData -> {
-//            if (pagingData != null) {
-//                adapter.submitData(getLifecycle(), pagingData);
-//            } else {
-//                Toast.makeText(getContext(), "Failed loading", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
-//
-    private void onItemClick(Movie movie) {
-        Bundle bundle = new Bundle();
-        bundle.putInt("movieId", movie.getId());
-        NavController navController = Navigation.findNavController(requireView());
-        navController.navigate(R.id.detailFragment, bundle);
-    }
+
+
 
     public void setupRecyclerView(boolean isGrid) {
         adapter = new MovieAdapter(isGrid);

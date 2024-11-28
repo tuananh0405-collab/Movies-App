@@ -44,38 +44,32 @@ public class MoviePagingSource extends RxPagingSource<Integer, Movie> {
     @Override
     public Single<LoadResult<Integer, Movie>> loadSingle(@NonNull LoadParams<Integer> loadParams) {
         int page = loadParams.getKey() != null ? loadParams.getKey() : 1;
-        Log.e("TAG", settings.toString());
 
         return movieRetrofitAPI.getMovies2(settings.getCategorySetting(), page)
                 .subscribeOn(Schedulers.io())
                 .map(response -> {
                     mMovieList = response.getResults();
 
-                    movieRepository.updateFavoriteStatus(mMovieList);  // Cập nhật trạng thái yêu thích
+                    movieRepository.updateFavoriteStatus(mMovieList);
 
-                    // Apply filtering based on movie_rating (if set)
                     if (settings.getMovieRating() > 0) {
                         mMovieList = mMovieList.stream()
                                 .filter(movie -> movie.getRating() >= settings.getMovieRating())
                                 .collect(Collectors.toList());
                     }
 
-                    // Apply filtering based on release_year (if set)
                     if (settings.getReleaseYear() != null && !settings.getReleaseYear().isEmpty()) {
-                        Log.e("TAG", settings.getReleaseYear());
 //                        mMovieList = mMovieList.stream()
 //                                .filter(movie -> movie.getReleaseDate().startsWith(settings.getReleaseYear()))
 //                                .collect(Collectors.toList());
                     }
 
-                    // Sorting based on the sort setting
                     if ("rating".equals(settings.getSortSetting())) {
                         Collections.sort(mMovieList, Comparator.comparingDouble(Movie::getRating).reversed());
                     } else if ("release_date".equals(settings.getSortSetting())) {
                         Collections.sort(mMovieList, Comparator.comparing(Movie::getReleaseDate).reversed());
                     }
 
-                    Log.e("Movie", mMovieList.get(0).getTitle());
                     return toLoadResult(mMovieList, page, response.getTotalPages());
                 })
                 .onErrorReturn(LoadResult.Error::new);

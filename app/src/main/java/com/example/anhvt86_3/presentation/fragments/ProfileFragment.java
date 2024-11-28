@@ -44,7 +44,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-//        ((MainActivity) requireActivity()).getAppComponent().inject(this);
         ((MyApplication) requireContext().getApplicationContext()).appComponent.inject(this);
 
     }
@@ -89,8 +88,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        ((MainActivity) requireActivity()).getAppComponent().inject(this);
-//
         binding.setUserProfile(viewModel.getUserProfileLiveData().getValue());
         Log.e("Gender", binding.getUserProfile().getGender());
         binding.cameraBtn.setOnClickListener(v -> {
@@ -108,8 +105,6 @@ public class ProfileFragment extends Fragment {
         });
 
 
-//        viewModel.getUserProfileLiveData().observe(getViewLifecycleOwner(), userProfile -> {
-//            binding.setUserProfile(userProfile);
 
             if ("male".equals(binding.getUserProfile().getGender())) {
                 Log.e("Gender", "male");
@@ -117,7 +112,6 @@ public class ProfileFragment extends Fragment {
             } else if ("female".equals(binding.getUserProfile().getGender())) {
                 binding.rbtnFemale.setChecked(true);
             }
-//        });
 
 
         binding.doneButton.setOnClickListener(v -> {
@@ -129,7 +123,7 @@ public class ProfileFragment extends Fragment {
                     binding.emailEditText.getText().toString(),
                     binding.birthdayEditText.getText().toString(),
                     binding.getUserProfile() != null ? binding.getUserProfile().getProfileImage() : null,
-                    gender // Gán giá trị gender lấy từ RadioGroup
+                    gender
             );
 
             Log.e("AVT", binding.getUserProfile().getProfileImage());

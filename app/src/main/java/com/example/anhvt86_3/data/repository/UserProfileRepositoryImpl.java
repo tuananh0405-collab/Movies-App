@@ -33,7 +33,7 @@ public class UserProfileRepositoryImpl implements UserRepository {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("TAG", "Failed to read user profile", error.toException());
+                Log.e("UserRepoImpl", "Failed to read user profile", error.toException());
 
             }
         });

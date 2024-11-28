@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
         TabLayout.Tab favoriteTab = binding.tabLayout.getTabAt(1);
         if (favoriteTab != null) {
             BadgeDrawable badgeDrawable = binding.tabLayout.getTabAt(1).getOrCreateBadge();
-            badgeDrawable.setVisible(false); // Initially hidden
+            badgeDrawable.setVisible(false);
         }
         movieViewModel.getFavoriteCountLiveData().observe(this, count -> {
             if (count > 0) {
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
                 tab.view.setLayoutParams(new LinearLayout.LayoutParams(
                         0,
                         LinearLayout.LayoutParams.WRAP_CONTENT,
-                        1.0f // This makes sure each tab takes equal width
+                        1.0f
                 ));
             }
         }
@@ -134,11 +134,11 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
         toggle.syncState();
 
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.anhvt86_3_preferences", MODE_PRIVATE);
-        String category = sharedPreferences.getString("filter_movie_category", "popular"); // Giá trị mặc định là "popular"
-        String sort = sharedPreferences.getString("sort_option", "rating"); // Giá trị mặc định là "desc"
-        String pagesPerLoading = sharedPreferences.getString("pages_per_loading", "1"); // Giá trị mặc định là 10
-        int movieRating = sharedPreferences.getInt("movie_rating", 5); // Giá trị mặc định là 5
-        String releaseYear = sharedPreferences.getString("release_year", "2024"); // Giá trị mặc định là rỗng
+        String category = sharedPreferences.getString("filter_movie_category", "popular");
+        String sort = sharedPreferences.getString("sort_option", "rating");
+        String pagesPerLoading = sharedPreferences.getString("pages_per_loading", "1");
+        int movieRating = sharedPreferences.getInt("movie_rating", 5);
+        String releaseYear = sharedPreferences.getString("release_year", "2024");
         movieViewModel.updateSettings(category, sort, Integer.parseInt(pagesPerLoading), movieRating, releaseYear);
 
         NavHeaderBinding navHeaderBinding = NavHeaderBinding.bind(
@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
         navHeaderBinding.rcvReminder.setLayoutManager(new LinearLayoutManager(this));
         navHeaderBinding.rcvReminder.setAdapter(reminderAdapter);
         reminderViewModel.getAllReminders().observe(this, this::updateReminders);
-        // Đăng ký BroadcastReceiver
+
         IntentFilter filter = new IntentFilter("UPDATE_REMINDERS");
         registerReceiver(remindersUpdateReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
     }
@@ -176,7 +176,6 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
             if (movieId != -1) {
                 reminderViewModel.deleteReminderByMovieId(movieId);
             }
-            // Cập nhật lại dữ liệu từ ViewModel
 
         }
     };

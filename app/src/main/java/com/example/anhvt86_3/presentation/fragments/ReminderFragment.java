@@ -35,7 +35,6 @@ public class ReminderFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-//        ((MainActivity) requireActivity()).getAppComponent().inject(this);
         ((MyApplication) requireContext().getApplicationContext()).appComponent.inject(this);
 
     }
@@ -48,9 +47,6 @@ public class ReminderFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//
-//        ((MainActivity) getActivity()).getAppComponent().inject(this);
-        // Set up RecyclerView
         adapter = new ReminderAdapter(new ArrayList<>(), reminderViewModel, movieViewModel, false);
         adapter.setLifecycleOwner(getViewLifecycleOwner());
         binding.recyclerViewReminders.setLayoutManager(new LinearLayoutManager(getContext()));

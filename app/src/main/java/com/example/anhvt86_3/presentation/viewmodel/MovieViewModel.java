@@ -65,9 +65,7 @@ public class MovieViewModel extends ViewModel {
 
     public void updateMovie(Movie movie) {
         mGetMoviesUseCase.updateMovie(movie);
-//        favoriteIconLiveData.setValue();
         updateFavoriteIcon(movie.getId(), movie.isFavorite());
-        // Update the movie list
         getMovieList(); // Reload the data
     }
 

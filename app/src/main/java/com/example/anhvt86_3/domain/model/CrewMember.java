@@ -12,7 +12,6 @@ public class CrewMember {
     @SerializedName("job")
     private String job;
 
-    // Add other relevant fields as needed
 
     public String getName() {
         return name;

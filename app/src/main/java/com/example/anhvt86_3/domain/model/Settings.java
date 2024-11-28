@@ -4,8 +4,8 @@ public class Settings {
     private String categorySetting = "popular";
     private String sortSetting;
     private int pagesPerLoadingSetting = 1;
-    private int movieRating = 5;  // Default rating value (0-10)
-    private String releaseYear = "";  // Default empty string for release year
+    private int movieRating = 5;
+    private String releaseYear = "";
 
     public int getMovieRating() {
         return movieRating;

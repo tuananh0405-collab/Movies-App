@@ -42,21 +42,6 @@ public class FavoriteFragment extends Fragment {
     MovieViewModel movieViewModel;
     private FavoriteAdapter adapter;
 
-    //    private FavoriteMovieAdapter adapter;
-//
-//    @Inject
-//    FavoriteMovieViewModel favoriteMovieViewModel;
-//
-//
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//
-//        }
-//        ((MyApplication) requireActivity().getApplication()).getAppComponent().inject(this);
-//
-//    }
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -79,7 +64,7 @@ public class FavoriteFragment extends Fragment {
         adapter.setOnFavClickListener(v -> {
             Movie movie = (Movie) v.getTag();
             movie.setFavorite(!movie.isFavorite());
-            movieViewModel.updateMovie(movie); // Update ViewModel
+            movieViewModel.updateMovie(movie);
             int pos = adapter.getCurrentList().indexOf(movie);
             if (pos != -1) {
                 adapter.notifyItemChanged(pos);
@@ -101,17 +86,6 @@ public class FavoriteFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//
-//        adapter = new FavoriteMovieAdapter(favoriteMovieViewModel, this::onItemClick);
-//        binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-//        binding.recyclerView.setAdapter(adapter);
-//
-//        favoriteMovieViewModel.getAllFavoriteMovies().observe(getViewLifecycleOwner(), movieListFavor -> {
-//            if (movieListFavor != null) {
-//                adapter.submitList(movieListFavor);
-//            }
-//        });
-//
         requireActivity().addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
@@ -155,10 +129,5 @@ public class FavoriteFragment extends Fragment {
             }
         });
     }
-//    private void onItemClick(Movie movie) {
-//        Bundle bundle = new Bundle();
-//        bundle.putInt("movieId", movie.getId());
-//        NavController navController = Navigation.findNavController(requireView());
-//        navController.navigate(R.id.detailFragment, bundle);
-//    }
+
 }

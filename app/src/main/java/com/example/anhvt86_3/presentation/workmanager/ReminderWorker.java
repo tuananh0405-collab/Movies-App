@@ -23,17 +23,12 @@ public class ReminderWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-//        FavoriteMovieDatabase db = Room.databaseBuilder(getApplicationContext(), FavoriteMovieDatabase.class, "favorite_movie_database")
-//                .allowMainThreadQueries()
-//                .build();
-//        ReminderDAO reminderDao = db.reminderDao();
         // Lấy dữ liệu từ inputData
         String movieTitle = getInputData().getString("movieTitle");
          notificationId = getInputData().getInt("notificationId", 0);
 
         // Hiển thị thông báo
         showNotification(movieTitle, notificationId);
-//        reminderDao.deleteReminderByMovieId(notificationId);
 
         sendBroadcastToUpdateUI();
 
