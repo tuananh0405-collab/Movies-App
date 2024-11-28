@@ -151,6 +151,6 @@ public class Movie implements Parcelable {
                 movie.isFavorite == this.isFavorite;
     }
     public String getInformation() {
-        return this.title + " - " + this.releaseDate + " - " + this.rating + " - " + this.isFavorite;
+        return this.title + " \n " + this.releaseDate + " \n " + this.rating;
     }
 }

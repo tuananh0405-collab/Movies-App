@@ -34,5 +34,15 @@
         android:id="@+id/reminderFragment"
         android:name="com.example.anhvt86_3.presentation.fragments.ReminderFragment"
         android:label="Reminders"
-        tools:layout="@layout/fragment_reminder" />
+        tools:layout="@layout/fragment_reminder" >
+        <action
+            android:id="@+id/action_reminderFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+        <argument
+            android:name="movieId"
+            app:argType="integer" />
+        <argument
+            android:name="isFavorite"
+            app:argType="boolean" />
+    </fragment>
 </navigation>

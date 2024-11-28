@@ -1,5 +1,6 @@
 package com.example.anhvt86_3.presentation.adapters;
 
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.anhvt86_3.R;
@@ -35,8 +38,9 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
         this.reminders = reminders;
         notifyDataSetChanged();
     }
+
     public void setRemindersNavHeader(List<Reminder> reminders) {
-        this.reminders =reminders.size() > 3 ? reminders.subList(0, 3) : reminders;
+        this.reminders = reminders.size() > 3 ? reminders.subList(0, 3) : reminders;
         notifyDataSetChanged();
     }
 
@@ -67,13 +71,34 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
             holder.binding.imageDelete.setOnClickListener(view -> {
                 reminderViewModel.deleteReminderByMovieId(reminder.getMovieId());
             });
+            holder.binding.getRoot().setOnClickListener(view -> {
+                moviesViewModel.getFavoriteMovies().observe(lifecycleOwner, new Observer<List<Movie>>() {
+                    @Override
+                    public void onChanged(List<Movie> movies) {
+                        for (Movie movie : movies) {
+                            if (movie.getId() == reminder.getMovieId()) {
+                                holder.binding.getMovie().setFavorite(true);
+                                break;
+                            }
+                        }
+                    }
+                });
+                Bundle bundle = new Bundle();
+                bundle.putInt("movieId", reminder.getMovieId());
+                bundle.putBoolean("isFavorite", holder.binding.getMovie().isFavorite());
+                NavController navController = Navigation.findNavController(view);
+                navController.navigate(R.id.detailFragment,bundle);
+            });
         }
         moviesViewModel.getMovieDetails(reminder.getMovieId()).observe(lifecycleOwner, new Observer<Movie>() {
             @Override
             public void onChanged(Movie movie) {
                 holder.binding.setMovie(movie);
+                Log.e("Movie", movie.getTitle());
             }
         });
+
+
 
         moviesViewModel.getMovieDetails(reminder.getMovieId());
     }

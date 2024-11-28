@@ -53,7 +53,6 @@ public class ReminderFragment extends Fragment {
         binding.recyclerViewReminders.setAdapter(adapter);
 
         reminderViewModel.getAllReminders().observe(getViewLifecycleOwner(), this::updateReminders);
-
     }
 
     private void updateReminders(List<Reminder> reminders) {
