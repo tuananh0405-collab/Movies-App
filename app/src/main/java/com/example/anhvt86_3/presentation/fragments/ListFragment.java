@@ -1,6 +1,7 @@
 package com.example.anhvt86_3.presentation.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,21 +44,24 @@ public class ListFragment extends Fragment {
     private FragmentListBinding binding;
     private boolean mIsGrid;
     private MovieAdapter adapter;
-private PagingData<Movie> movies;
+    private PagingData<Movie> movies;
     @Inject
-MovieViewModel movieViewModel;
-@Override
-public void onAttach(@NonNull Context context) {
-    super.onAttach(context);
-    ((MyApplication) requireContext().getApplicationContext()).appComponent.inject(this);
+    MovieViewModel movieViewModel;
 
-}
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        ((MyApplication) requireContext().getApplicationContext()).appComponent.inject(this);
+
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mIsGrid = Boolean.TRUE.equals(movieViewModel.getIsGrid().getValue());
 
     }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -129,11 +133,38 @@ public void onAttach(@NonNull Context context) {
                 if (menuItem.getItemId() == R.id.action_switch_view) {
                     handleSwitchView(menuItem);
                     return true;
+                } else if (menuItem.getItemId() == R.id.popularMovies) {
+                    handleOptionsMenu("popular");
+                    return true;
+                } else if (menuItem.getItemId() == R.id.topRatedMovies) {
+                    handleOptionsMenu("top_rated");
+                    return true;
+                } else if (menuItem.getItemId() == R.id.upcomingMovies) {
+                    handleOptionsMenu("upcoming");
+                    return true;
+                } else if (menuItem.getItemId() == R.id.nowPlayingMovies) {
+                    handleOptionsMenu("now_playing");
+                    return true;
                 }
                 return false;
             }
         }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
     }
+
+    private void handleOptionsMenu(String newCategory) {
+        String sort = movieViewModel.getSettings().getValue().getSortSetting();
+        int pagesPerLoading = movieViewModel.getSettings().getValue().getPagesPerLoadingSetting();
+        int movieRating = movieViewModel.getSettings().getValue().getMovieRating();
+        String releaseYear = movieViewModel.getSettings().getValue().getReleaseYear();
+
+        movieViewModel.updateSettings(newCategory, sort, pagesPerLoading, movieRating, releaseYear);
+
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("com.example.anhvt86_3_preferences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("filter_movie_category", newCategory);
+        editor.apply();
+    }
+
     private void handleSwitchView(MenuItem menuItem) {
         int currentPosition = ((LinearLayoutManager) binding.rcvMovie.getLayoutManager()).findFirstVisibleItemPosition();
 
@@ -161,7 +192,6 @@ public void onAttach(@NonNull Context context) {
         menuItem.setTitle(!mIsGrid ? "Switch to Grid View" : "Switch to List View");
         menuItem.setIcon(!mIsGrid ? R.drawable.ic_list : R.drawable.ic_grid);
     }
-
 
 
     public void setupRecyclerView(boolean isGrid) {
