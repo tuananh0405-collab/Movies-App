@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -18,6 +20,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -168,6 +171,8 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
 
         IntentFilter filter = new IntentFilter("UPDATE_REMINDERS");
         registerReceiver(remindersUpdateReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+
+        handleIntent(getIntent());
     }
     private final BroadcastReceiver remindersUpdateReceiver = new BroadcastReceiver() {
         @Override
@@ -221,6 +226,27 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
 
             NavigationUI.setupActionBarWithNavController(MainActivity.this, currentNavController, appBarConfiguration);
             NavigationUI.setupWithNavController(binding.navigationView, currentNavController);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(@NonNull Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+       handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        Log.e("MainActivity", "onNewIntent called");
+
+        // Check if the intent has the 'notificationId' extra
+        if (intent.hasExtra("notificationId")) {
+            int notificationId = intent.getIntExtra("notificationId", -1);  // Get notificationId from the intent
+            Log.d("MainActivity", "Notification clicked! notificationId: " + notificationId);
+movieViewModel.setNotifyMovieId(notificationId);
+
+        } else {
+            Log.e("MainActivity", "No notificationId found in the intent.");
         }
     }
 

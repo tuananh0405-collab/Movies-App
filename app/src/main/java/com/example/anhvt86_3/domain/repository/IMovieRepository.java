@@ -24,4 +24,5 @@ public interface IMovieRepository {
 
     Single<CreditsResponse> getMovieCredits(int movieId);
 
+    Single<Movie> getMovieById(int movieId);
 }

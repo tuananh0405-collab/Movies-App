@@ -43,7 +43,7 @@ public class DetailFragment extends Fragment {
         ReminderViewModel reminderViewModel;
     private int movieId;
     private String movieTitle="Movie Detail";
-    private boolean isFavorite;
+//    private boolean isFavorite;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -65,13 +65,15 @@ public class DetailFragment extends Fragment {
         // Lấy movieId từ arguments
         if (getArguments() != null) {
             movieId = getArguments().getInt("movieId");
-            isFavorite = getArguments().getBoolean("isFavorite");
+//            isFavorite = getArguments().getBoolean("isFavorite");
 
             Log.e("movieId", movieId + "");
             // Quan sát LiveData
             movieViewModel.getMovieDetails(movieId).observe(getViewLifecycleOwner(), movie -> {
                 if (movie != null) {
-                    movie.setFavorite(isFavorite);
+                    Log.e("movie fav from api", movie.isFavorite()+"");
+                    movie.setFavorite(movie.isFavorite());
+//                    movie.setFavorite(isFavorite);
                     binding.setMovie(movie);
                     binding.icFavorite.setImageResource(movie.isFavorite() ? R.drawable.ic_like : R.drawable.ic_dislike);
                     movieTitle = movie.getTitle();

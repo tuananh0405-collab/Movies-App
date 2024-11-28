@@ -46,9 +46,29 @@ public class GetMoviesUseCase {
         movieRepository.getMovieDetails(movieId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe(liveData::postValue,
-                        throwable -> {
-                        });
+//                .subscribe(liveData::postValue,
+//                        throwable -> {
+//                        });
+                .subscribe(movie -> {
+                    // Sau khi lấy thông tin chi tiết, lấy trạng thái "favorite" từ cơ sở dữ liệu
+                    movieRepository.getMovieById(movieId).observeOn(Schedulers.io())
+                            .subscribe(favoriteMovie -> {
+                                if (favoriteMovie != null) {
+                                    // Cập nhật trạng thái "favorite" cho đối tượng Movie
+                                    movie.setFavorite(true);
+                                } else {
+                                    movie.setFavorite(false);
+                                }
+                                // Trả về đối tượng Movie đã cập nhật
+                                liveData.postValue(movie);
+                            }, throwable -> {
+                                // Nếu không tìm thấy thông tin trong DB, mặc định là không phải favorite
+                                movie.setFavorite(false);
+                                liveData.postValue(movie);
+                            });
+                }, throwable -> {
+                    liveData.postValue(null);
+                });
         return liveData;
     }
 

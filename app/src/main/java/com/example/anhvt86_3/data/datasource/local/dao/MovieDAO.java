@@ -9,6 +9,8 @@ import com.example.anhvt86_3.data.datasource.local.entity.MovieEntity;
 
 import java.util.List;
 
+import io.reactivex.Single;
+
 
 @Dao
 public interface MovieDAO {
@@ -20,4 +22,7 @@ public interface MovieDAO {
 
     @Query("DELETE FROM movie_table WHERE id = :id")
     void delete(int id);
+
+    @Query("SELECT * FROM movie_table WHERE id = :movieId")
+    Single<MovieEntity> getMovieById(int movieId);
 }

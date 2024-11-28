@@ -106,8 +106,15 @@ public class MovieRepositoryImpl implements IMovieRepository {
     public Single<Movie> getMovieDetails(int movieId) {
         return retrofitAPI.getMovieDetails(movieId, Constants.API_KEY);
     }
+
     @Override
     public Single<CreditsResponse> getMovieCredits(int movieId) {
         return retrofitAPI.getMovieCredits(movieId, Constants.API_KEY);
+    }
+
+    @Override
+    public Single<Movie> getMovieById(int movieId) {
+//        return Transformations.map( mMovieDAO.getMovieById(movieId), MovieMapper::FromMovieEntityToMovie);
+        return mMovieDAO.getMovieById(movieId).map(MovieMapper::FromMovieEntityToMovie);
     }
 }

@@ -56,6 +56,14 @@ public class FavoriteFragment extends Fragment {
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(adapter);
 
+        binding.swipeRefreshLayout.setOnRefreshListener(() -> {
+            movieViewModel.getFavoriteMovies().observe(getViewLifecycleOwner(), movies -> {
+                adapter.submitList(movies);
+                binding.swipeRefreshLayout.setRefreshing(false);
+            });
+        });
+
+
         movieViewModel.getFavoriteMovies().observe(getViewLifecycleOwner(), movies -> {
             Log.d("TAG", "onCreateView: " + movies.size());
             adapter.submitList(movies);
@@ -74,7 +82,7 @@ public class FavoriteFragment extends Fragment {
             Movie movie = (Movie) v.getTag();
             Bundle bundle = new Bundle();
             bundle.putInt("movieId", movie.getId());
-            bundle.putBoolean("isFavorite", true);
+//            bundle.putBoolean("isFavorite", true);
             NavController navController = Navigation.findNavController(requireView());
             navController.navigate(R.id.detailFragment, bundle);
         });

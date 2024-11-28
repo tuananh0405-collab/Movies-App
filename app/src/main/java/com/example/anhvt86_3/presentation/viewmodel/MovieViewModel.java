@@ -133,4 +133,13 @@ public class MovieViewModel extends ViewModel {
             favoriteIconLiveData.setValue(currentStatus);
         }
     }
+
+    private final MutableLiveData<Integer> notifyMovieId = new MutableLiveData<>(-1);
+    public MutableLiveData<Integer> getNotifyMovieId() {
+
+        return notifyMovieId;
+    }
+    public void setNotifyMovieId(int movieId) {
+        notifyMovieId.setValue(movieId);
+    }
 }

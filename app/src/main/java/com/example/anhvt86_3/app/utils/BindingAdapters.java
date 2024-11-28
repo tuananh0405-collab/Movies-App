@@ -112,5 +112,4 @@ public class BindingAdapters {
     public static boolean stringToBooleanFemale(String gender) {
         return "female".equals(gender);
     }
-
 }

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <import type="com.example.anhvt86_3.app.utils.BindingAdapters" />
 
         <variable
@@ -10,52 +11,49 @@
             type="com.example.anhvt86_3.domain.model.UserProfile" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <ImageView
             android:id="@+id/displayImageView"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
             app:imageUrl="@{userProfile.profileImage}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.23"
             app:srcCompat="@drawable/ic_launcher_background" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/cameraBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text="Camera"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.33"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/displayImageView" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/galleryBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Gallery"
-            app:layout_constraintBottom_toBottomOf="@+id/cameraBtn"
-            app:layout_constraintStart_toEndOf="@+id/cameraBtn"
-            app:layout_constraintTop_toTopOf="@+id/cameraBtn" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/cameraBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Camera" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/galleryBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Gallery" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:orientation="vertical"
-            android:padding="50dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/cameraBtn">
+            android:padding="50dp">
 
             <EditText
                 android:id="@+id/fullNameEditText"
@@ -74,7 +72,9 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/birthdayEditText"
@@ -89,20 +89,13 @@
                     android:id="@+id/birthdayButton"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
-                    android:scaleType="centerCrop"
                     android:src="@drawable/ic_birthday" />
             </LinearLayout>
 
-<!--            <EditText-->
-<!--                android:id="@+id/genderEditText"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:hint="Gender"-->
-<!--                android:inputType="text"-->
-<!--                android:text="@={userProfile.gender}" />-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -131,14 +124,14 @@
                         android:layout_marginStart="16dp"
                         android:checked="@={BindingAdapters.stringToBooleanFemale(userProfile.gender)}"
                         android:text="Female" />
-
                 </RadioGroup>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatButton
@@ -156,5 +149,6 @@
                     android:text="Done" />
             </LinearLayout>
         </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
 </layout>

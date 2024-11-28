@@ -69,6 +69,15 @@ public class ListFragment extends Fragment {
 
         setupRecyclerView(mIsGrid);
 
+        binding.swipeRefreshLayout.setOnRefreshListener(() -> {
+            movieViewModel.getMovieList().observe(getViewLifecycleOwner(), movies -> {
+                this.movies = movies;
+                adapter.submitData(getLifecycle(), movies);
+                binding.swipeRefreshLayout.setRefreshing(false);
+            });
+        });
+
+
         movieViewModel.getMovieList().observe(getViewLifecycleOwner(), movies -> {
             this.movies = movies;
             adapter.submitData(getLifecycle(), movies);
@@ -109,12 +118,21 @@ public class ListFragment extends Fragment {
             Movie movie = (Movie) view.getTag();
             Bundle bundle = new Bundle();
             bundle.putInt("movieId", movie.getId());
-            bundle.putBoolean("isFavorite", movie.isFavorite());
+//            bundle.putBoolean("isFavorite", movie.isFavorite());
             NavController navController = Navigation.findNavController(requireView());
             navController.navigate(R.id.detailFragment, bundle);
         });
 
+        movieViewModel.getNotifyMovieId().observe(getViewLifecycleOwner(), movieId -> {
+            if (movieId != -1) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("movieId", movieId);
+                NavController navController = Navigation.findNavController(requireView());
+                navController.navigate(R.id.detailFragment, bundle);
+                movieViewModel.setNotifyMovieId(-1);
 
+            }
+        });
         return binding.getRoot();
     }
 
