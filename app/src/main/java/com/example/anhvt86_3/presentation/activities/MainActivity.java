@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
@@ -150,14 +151,25 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
 
         navHeaderBinding.btnEditProfile.setOnClickListener(view -> {
             currentNavController.navigate(R.id.profileFragment);
+            movieViewModel.setProfileReminderFragment(R.id.profileFragment);
+
             drawerLayout.close();
         });
-
         navHeaderBinding.btnShowReminders.setOnClickListener(view -> {
             currentNavController.navigate(R.id.reminderFragment);
+            movieViewModel.setProfileReminderFragment(R.id.reminderFragment);
             drawerLayout.close();
         });
-
+        movieViewModel.getProfileReminderFragment().observe(this, id -> {
+            if (id != -1) {
+                // Disable swipe and hide TabLayout
+                binding.viewPager.setUserInputEnabled(false); // Disable swipe navigation
+                binding.tabLayout.setVisibility(View.GONE); // Hide TabLayout
+            } else {
+                binding.viewPager.setUserInputEnabled(true); // Disable swipe navigation
+                binding.tabLayout.setVisibility(View.VISIBLE); // Hide TabLayout
+            }
+        });
         profileViewModel.getUserProfileLiveData().observe(this, userProfile -> {
             if (userProfile != null) {
                 navHeaderBinding.setProfile(userProfile);
@@ -174,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
 
         handleIntent(getIntent());
     }
+
     private final BroadcastReceiver remindersUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -196,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
             reminderAdapter.setRemindersNavHeader(reminders);
         }
     }
+
     private void setAppBarNavigation(ViewPagerAdapter adapter, int position) {
         try {
             for (MutableLiveData<NavController> navControllerLiveData : adapter.getNavControllerMap().values()) {
@@ -215,6 +229,8 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
 
     @Override
     public boolean onSupportNavigateUp() {
+        movieViewModel.setProfileReminderFragment(-1);
+
         return NavigationUI.navigateUp(currentNavController, binding.drawerLayout);
     }
 
@@ -233,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
     protected void onNewIntent(@NonNull Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-       handleIntent(intent);
+        handleIntent(intent);
     }
 
     private void handleIntent(Intent intent) {
@@ -243,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
         if (intent.hasExtra("notificationId")) {
             int notificationId = intent.getIntExtra("notificationId", -1);  // Get notificationId from the intent
             Log.d("MainActivity", "Notification clicked! notificationId: " + notificationId);
-movieViewModel.setNotifyMovieId(notificationId);
+            movieViewModel.setNotifyMovieId(notificationId);
 
         } else {
             Log.e("MainActivity", "No notificationId found in the intent.");

@@ -142,4 +142,12 @@ public class MovieViewModel extends ViewModel {
     public void setNotifyMovieId(int movieId) {
         notifyMovieId.setValue(movieId);
     }
+
+    private MutableLiveData<Integer> profileReminderFragment = new MutableLiveData<>(-1);
+    public MutableLiveData<Integer> getProfileReminderFragment() {
+        return profileReminderFragment;
+    }
+    public void setProfileReminderFragment(int movieId) {
+        profileReminderFragment.setValue(movieId);
+    }
 }
