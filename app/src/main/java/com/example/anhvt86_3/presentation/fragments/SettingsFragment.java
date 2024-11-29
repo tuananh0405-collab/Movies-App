@@ -1,7 +1,11 @@
 package com.example.anhvt86_3.presentation.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.EditTextPreference;
@@ -21,13 +25,36 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
 @Inject
 MovieViewModel viewModel;
+    ListPreference filterCategoryPreference;
     @Override
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
         setPreferencesFromResource(R.xml.preferences, rootKey);
         ((MyApplication) requireContext().getApplicationContext()).appComponent.inject(this);
 
+//        // Lắng nghe thay đổi SharedPreferences
+//        SharedPreferences sharedPreferences = getContext().getSharedPreferences("com.example.anhvt86_3_preferences", Context.MODE_PRIVATE);
+//        sharedPreferences.registerOnSharedPreferenceChangeListener((sharedPrefs, key) -> {
+//            if ("filter_movie_category".equals(key)) {
+//                String newCategory = sharedPrefs.getString(key, "");
+//                ListPreference filterCategoryPreference = findPreference("filter_movie_category");
+//                if (filterCategoryPreference != null) {
+//                    filterCategoryPreference.setValue(newCategory);
+//                    filterCategoryPreference.setSummary(newCategory);
+//                }
+//            }
+//        });
+//
+//        // Thiết lập ban đầu cho ListPreference
+//        ListPreference filterCategoryPreference = findPreference("filter_movie_category");
+//        if (filterCategoryPreference != null) {
+//            String currentCategory = sharedPreferences.getString("filter_movie_category", "popular");
+//            filterCategoryPreference.setValue(currentCategory);
+//            filterCategoryPreference.setSummary(currentCategory);
+//        }
+//
+//
         // Filter by movie category
-        ListPreference filterCategoryPreference = findPreference("filter_movie_category");
+         filterCategoryPreference = findPreference("filter_movie_category");
         if (filterCategoryPreference != null) {
             filterCategoryPreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 String filterValue = (String) newValue;
@@ -90,6 +117,15 @@ MovieViewModel viewModel;
                 return value != null && !value.isEmpty() ? value : "Not set";
             });
         }
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        viewModel.getSettings().observe(getViewLifecycleOwner(), settings -> {
+            filterCategoryPreference.setValue(settings.getCategorySetting());
+            filterCategoryPreference.setSummary(settings.getCategorySetting());
+        });
     }
 
     private void updateSettings(@Nullable String filterCategory, @Nullable String sortOption, @Nullable Integer pagesPerLoading,
