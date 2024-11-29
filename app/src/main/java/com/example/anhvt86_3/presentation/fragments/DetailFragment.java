@@ -149,6 +149,8 @@ public class DetailFragment extends Fragment {
                     .setInitialDelay(delay, TimeUnit.MILLISECONDS)
                     .setInputData(new Data.Builder()
                             .putString("movieTitle", binding.getMovie().getTitle())
+                            .putString("overview", binding.getMovie().getOverview())
+                            .putString("posterPath", binding.getMovie().getPosterPath())
                             .putInt("notificationId", movieId)
                             .build())
                     .build();
