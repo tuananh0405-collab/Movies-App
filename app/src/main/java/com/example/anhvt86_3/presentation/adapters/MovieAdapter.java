@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.paging.PagingDataAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +15,7 @@ import com.example.anhvt86_3.R;
 import com.example.anhvt86_3.databinding.ItemGridBinding;
 import com.example.anhvt86_3.databinding.ItemListBinding;
 import com.example.anhvt86_3.domain.model.Movie;
+import com.example.anhvt86_3.presentation.viewmodel.MovieViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -30,6 +32,7 @@ public class MovieAdapter extends PagingDataAdapter<Movie, RecyclerView.ViewHold
 
     private View.OnClickListener onFavClickListener;
     private View.OnClickListener onItemClickListener;
+    private MovieViewModel movieViewModel;
 
     public void setOnFavClickListener(View.OnClickListener onFavClickListener) {
         this.onFavClickListener = onFavClickListener;
@@ -39,9 +42,10 @@ public class MovieAdapter extends PagingDataAdapter<Movie, RecyclerView.ViewHold
         this.onItemClickListener = onItemClickListener;
     }
 
-    public MovieAdapter(boolean isGrid) {
+    public MovieAdapter(boolean isGrid, MovieViewModel movieViewModel) {
         super(DIFF_CALLBACK);
         this.isGrid = isGrid;
+        this.movieViewModel = movieViewModel;
     }
 
     public void setGrid(boolean isGrid) {
@@ -96,9 +100,17 @@ public class MovieAdapter extends PagingDataAdapter<Movie, RecyclerView.ViewHold
                     .into(viewHolder.itemBinding.moviePoster);
 
             viewHolder.itemBinding.favouriteStar.setTag(movie);
-            viewHolder.itemBinding.favouriteStar.setOnClickListener(onFavClickListener);
+            viewHolder.itemBinding.favouriteStar.setOnClickListener(view -> {
+                onFavClickListener.onClick(view);
+                viewHolder.itemBinding.favouriteStar.setImageResource(movie.isFavorite() ? R.drawable.ic_like : R.drawable.ic_dislike);
+            });
             viewHolder.itemBinding.getRoot().setTag(movie);
             viewHolder.itemBinding.getRoot().setOnClickListener(onItemClickListener);
+
+            movieViewModel.getFavoriteIconLiveData().observe((LifecycleOwner) viewHolder.itemBinding.getRoot().getContext(), favStatusMap -> {
+                if (favStatusMap.get(movie.getId()) != null)
+                viewHolder.itemBinding.favouriteStar.setImageResource(favStatusMap.get(movie.getId()) ? R.drawable.ic_like : R.drawable.ic_dislike);
+            });
         }
 
     }

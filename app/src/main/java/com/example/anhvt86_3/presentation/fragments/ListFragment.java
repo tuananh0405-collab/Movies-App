@@ -108,10 +108,10 @@ public class ListFragment extends Fragment {
             Movie movie = (Movie) v.getTag();
             movie.setFavorite(!movie.isFavorite());
             movieViewModel.updateMovie(movie);
-            int position = adapter.getCurrentList().indexOf(movie);
-            if (position != -1) {
-                adapter.notifyItemChanged(position);
-            }
+//            int position = adapter.getCurrentList().indexOf(movie);
+//            if (position != -1) {
+//                adapter.notifyItemChanged(position);
+//            }
         });
 
         adapter.setOnItemClickListener(view -> {
@@ -213,7 +213,7 @@ public class ListFragment extends Fragment {
 
 
     public void setupRecyclerView(boolean isGrid) {
-        adapter = new MovieAdapter(isGrid);
+        adapter = new MovieAdapter(isGrid, movieViewModel);
         LinearLayoutManager layoutManager;
         if (isGrid) {
             layoutManager = new GridLayoutManager(getContext(), 2);
