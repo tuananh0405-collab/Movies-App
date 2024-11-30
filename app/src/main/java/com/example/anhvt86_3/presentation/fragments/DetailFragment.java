@@ -63,6 +63,7 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentDetailBinding.inflate(inflater, container, false);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
         movieId = getArguments().getInt("movieId");
 
         if (reminderViewModel.getReminderByMovieId(movieId) != null){
@@ -79,6 +80,16 @@ public class DetailFragment extends Fragment {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 String formattedDateTime = localDateTime.format(formatter);
                 binding.tvReminderInfo.setText(formattedDateTime);
+                Log.e("info", "change");
+            }else {
+                binding.tvReminderInfo.setText("");
+            }
+        });
+        movieViewModel.getNotifyMovieId().observe(getViewLifecycleOwner(), movieId -> {
+            if (movieId != -1) {
+                binding.tvReminderInfo.setText("");
+                movieViewModel.setNotifyMovieId(-1);
+
             }
         });
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
@@ -174,6 +185,7 @@ public class DetailFragment extends Fragment {
         long delay = reminderTime - System.currentTimeMillis();
         if (delay > 0) {
             OneTimeWorkRequest reminderRequest = new OneTimeWorkRequest.Builder(ReminderWorker.class)
+                    .addTag(String.valueOf(movieId))
                     .setInitialDelay(delay, TimeUnit.MILLISECONDS)
                     .setInputData(new Data.Builder()
                             .putString("movieTitle", binding.getMovie().getTitle())

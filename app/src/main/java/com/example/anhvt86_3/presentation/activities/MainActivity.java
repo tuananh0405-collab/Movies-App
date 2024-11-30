@@ -26,6 +26,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
+import androidx.work.WorkManager;
 
 import com.example.anhvt86_3.R;
 import com.example.anhvt86_3.app.di.MyApplication;
@@ -193,6 +194,11 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
             int movieId = intent.getIntExtra("movieId", -1);
             if (movieId != -1) {
                 reminderViewModel.deleteReminderByMovieId(movieId);
+                reminderViewModel.updateReminderInfo(movieId,"");
+                movieViewModel.setNotifyMovieId(movieId);
+
+                WorkManager.getInstance(context).cancelAllWorkByTag(String.valueOf(movieId));
+                Log.e("Uwork tag", WorkManager.getInstance(context).getWorkInfosByTag(String.valueOf(movieId)).toString());
             }
 
         }

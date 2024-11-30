@@ -1,5 +1,7 @@
 package com.example.anhvt86_3.presentation.viewmodel;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -50,6 +52,7 @@ public class ReminderViewModel extends ViewModel {
 
     public void updateReminderInfo(int movieId, String info) {
         HashMap<Integer, String> map = reminderInfo.getValue();
+        Log.e("info", "movieId: " + movieId + ", info: " + info);
         if (map != null) {
             map.put(movieId, info);
             reminderInfo.setValue(map);
