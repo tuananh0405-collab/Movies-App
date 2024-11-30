@@ -15,6 +15,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 
+import com.example.anhvt86_3.R;
 import com.example.anhvt86_3.app.di.MyApplication;
 import com.example.anhvt86_3.databinding.FragmentReminderBinding;
 import com.example.anhvt86_3.domain.model.Reminder;
@@ -45,6 +46,8 @@ public class ReminderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentReminderBinding.inflate(inflater, container, false);
+        movieViewModel.setProfileReminderFragment(R.id.reminderFragment);
+
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {

@@ -96,6 +96,12 @@
                 android:text="Reminder" />
 
             <TextView
+                android:id="@+id/tvReminderInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cast &amp;&amp; Crew"

@@ -88,6 +88,8 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
                 bundle.putBoolean("isFavorite", holder.binding.getMovie().isFavorite());
                 NavController navController = Navigation.findNavController(view);
                 navController.navigate(R.id.detailFragment,bundle);
+                moviesViewModel.setProfileReminderFragment(-1);
+
             });
         }
         moviesViewModel.getMovieDetails(reminder.getMovieId()).observe(lifecycleOwner, new Observer<Movie>() {

@@ -31,6 +31,10 @@ import com.example.anhvt86_3.presentation.viewmodel.MovieViewModel;
 import com.example.anhvt86_3.presentation.viewmodel.ReminderViewModel;
 import com.example.anhvt86_3.presentation.workmanager.ReminderWorker;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
@@ -59,6 +63,24 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentDetailBinding.inflate(inflater, container, false);
+        movieId = getArguments().getInt("movieId");
+
+        if (reminderViewModel.getReminderByMovieId(movieId) != null){
+            LocalDateTime localDateTime = Instant.ofEpochMilli(reminderViewModel.getReminderByMovieId(movieId).getReminderTime())
+                    .atZone(ZoneId.systemDefault()).toLocalDateTime();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedDateTime = localDateTime.format(formatter);
+            binding.tvReminderInfo.setText(formattedDateTime);
+        }
+        reminderViewModel.getReminderInfo().observe(getViewLifecycleOwner(), info -> {
+            if (info != null && info.containsKey(movieId)) {
+                LocalDateTime localDateTime = Instant.ofEpochMilli(reminderViewModel.getReminderByMovieId(movieId).getReminderTime())
+                        .atZone(ZoneId.systemDefault()).toLocalDateTime();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                String formattedDateTime = localDateTime.format(formatter);
+                binding.tvReminderInfo.setText(formattedDateTime);
+            }
+        });
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -116,6 +138,10 @@ public class DetailFragment extends Fragment {
                 }
             });
 
+
+
+
+
         }
     }
 
@@ -137,9 +163,11 @@ public class DetailFragment extends Fragment {
         Reminder reminder = new Reminder(reminderTime, movieId);
         if (reminderViewModel.getReminderByMovieId(movieId) != null) {
             reminderViewModel.updateReminder(reminder);
+            reminderViewModel.updateReminderInfo(movieId, reminderTime + "");
         } else {
 
             reminderViewModel.insertReminder(reminder);
+            reminderViewModel.updateReminderInfo(movieId, reminderTime + "");
         }
 
         // Tính toán khoảng thời gian chờ
