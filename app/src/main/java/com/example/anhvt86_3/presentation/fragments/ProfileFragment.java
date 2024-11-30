@@ -2,6 +2,7 @@ package com.example.anhvt86_3.presentation.fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -43,12 +44,14 @@ public class ProfileFragment extends Fragment {
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher;
     private FragmentProfileBinding binding;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         ((MyApplication) requireContext().getApplicationContext()).appComponent.inject(this);
 
     }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +87,24 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         binding.setLifecycleOwner(this);
+        viewModel.getUserProfileLiveData().observe(getViewLifecycleOwner(), userProfile -> {
+            binding.setUserProfile(userProfile);
+            Log.e("user","exist");
+        });
+        if (viewModel.getUserProfileLiveData().getValue() == null) {
+//            binding.setUserProfile(new UserProfile("name", "email", "birthday", "profileImage", "male"));
+            Log.e("user","non exist");
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Information")
+                    .setMessage("Unregistered on Firebase. Please register online first.")
+                    .setPositiveButton("Back", (dialog, which) -> {
+                        // Điều hướng người dùng quay lại màn hình trước
+                        NavController navController = Navigation.findNavController(binding.getRoot());
+                        navController.popBackStack();  // Quay lại màn hình trước
+                    })
+                    .setCancelable(false)  // Không cho phép hủy AlertDialog
+                    .show();
+        }
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -97,7 +118,13 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        binding.setUserProfile(viewModel.getUserProfileLiveData().getValue());
+//        if (viewModel.getUserProfileLiveData().getValue() == null) {
+//            binding.setUserProfile(new UserProfile("name", "email", "birthday", "profileImage", "male"));
+//        }
+
+//        binding.setUserProfile(viewModel.getUserProfileLiveData().getValue());
+        if (binding.getUserProfile() != null){
+
         Log.e("Gender", binding.getUserProfile().getGender());
         binding.cameraBtn.setOnClickListener(v -> {
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -114,13 +141,12 @@ public class ProfileFragment extends Fragment {
         });
 
 
-
-            if ("male".equals(binding.getUserProfile().getGender())) {
-                Log.e("Gender", "male");
-                binding.rbtnMale.setChecked(true);
-            } else if ("female".equals(binding.getUserProfile().getGender())) {
-                binding.rbtnFemale.setChecked(true);
-            }
+        if ("male".equals(binding.getUserProfile().getGender())) {
+            Log.e("Gender", "male");
+            binding.rbtnMale.setChecked(true);
+        } else if ("female".equals(binding.getUserProfile().getGender())) {
+            binding.rbtnFemale.setChecked(true);
+        }
 
 
         binding.doneButton.setOnClickListener(v -> {
@@ -159,6 +185,8 @@ public class ProfileFragment extends Fragment {
         viewModel.getUserProfileLiveData().observe(getViewLifecycleOwner(), userProfile -> {
             binding.setUserProfile(userProfile);
         });
+        }
+
     }
 
     private void updateProfileImage(Bitmap bitmap) {

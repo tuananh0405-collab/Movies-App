@@ -33,6 +33,7 @@ import com.example.anhvt86_3.app.di.MyApplication;
 import com.example.anhvt86_3.databinding.ActivityMainBinding;
 import com.example.anhvt86_3.databinding.NavHeaderBinding;
 import com.example.anhvt86_3.domain.model.Reminder;
+import com.example.anhvt86_3.domain.model.UserProfile;
 import com.example.anhvt86_3.presentation.adapters.ReminderAdapter;
 import com.example.anhvt86_3.presentation.adapters.ViewPagerAdapter;
 import com.example.anhvt86_3.presentation.viewmodel.MovieViewModel;
@@ -174,6 +175,8 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
         profileViewModel.getUserProfileLiveData().observe(this, userProfile -> {
             if (userProfile != null) {
                 navHeaderBinding.setProfile(userProfile);
+            }else {
+                navHeaderBinding.setProfile(new UserProfile("null", "null", "null", "null", "unknown"));
             }
         });
         reminderAdapter = new ReminderAdapter(new ArrayList<>(), reminderViewModel, movieViewModel, true);
