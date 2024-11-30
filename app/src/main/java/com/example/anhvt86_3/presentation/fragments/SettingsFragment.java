@@ -26,6 +26,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 @Inject
 MovieViewModel viewModel;
     ListPreference filterCategoryPreference;
+    SeekBarPreference movieRatingPreference;
     @Override
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
         setPreferencesFromResource(R.xml.preferences, rootKey);
@@ -91,17 +92,17 @@ MovieViewModel viewModel;
         }
 
         // Movie Rating
-        SeekBarPreference movieRatingPreference = findPreference("movie_rating");
+         movieRatingPreference = findPreference("movie_rating");
         if (movieRatingPreference != null) {
             movieRatingPreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 int ratingValue = (Integer) newValue;
                 updateSettings(null, null, null, ratingValue, null);
                 return true;
             });
-            movieRatingPreference.setSummaryProvider(preference -> {
-                int rating = ((SeekBarPreference) preference).getValue();
-                return rating + "/10";  // Show rating as 0-10 scale
-            });
+//            movieRatingPreference.setSummaryProvider(preference -> {
+//                int rating = ((SeekBarPreference) preference).getValue();
+//                return rating + "/10";  // Show rating as 0-10 scale
+//            });
         }
 
         // Release Year
@@ -125,6 +126,8 @@ MovieViewModel viewModel;
         viewModel.getSettings().observe(getViewLifecycleOwner(), settings -> {
             filterCategoryPreference.setValue(settings.getCategorySetting());
             filterCategoryPreference.setSummary(settings.getCategorySetting());
+            movieRatingPreference.setValue(settings.getMovieRating());
+            movieRatingPreference.setSummary(settings.getMovieRating() + "/10");
         });
     }
 

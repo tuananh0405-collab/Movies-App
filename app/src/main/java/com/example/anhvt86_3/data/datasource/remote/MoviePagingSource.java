@@ -59,9 +59,10 @@ public class MoviePagingSource extends RxPagingSource<Integer, Movie> {
                     }
 
                     if (settings.getReleaseYear() != null && !settings.getReleaseYear().isEmpty()) {
-//                        mMovieList = mMovieList.stream()
-//                                .filter(movie -> movie.getReleaseDate().startsWith(settings.getReleaseYear()))
-//                                .collect(Collectors.toList());
+                        Log.e("Setting", "loadSingle: " + settings.getReleaseYear());
+                        mMovieList = mMovieList.stream()
+                                .filter(movie -> movie.getReleaseDate().startsWith(settings.getReleaseYear()))
+                                .collect(Collectors.toList());
                     }
 
                     if ("rating".equals(settings.getSortSetting())) {
