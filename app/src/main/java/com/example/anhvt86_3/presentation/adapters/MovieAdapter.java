@@ -109,7 +109,7 @@ public class MovieAdapter extends PagingDataAdapter<Movie, RecyclerView.ViewHold
 
             movieViewModel.getFavoriteIconLiveData().observe((LifecycleOwner) viewHolder.itemBinding.getRoot().getContext(), favStatusMap -> {
                 if (favStatusMap.get(movie.getId()) != null)
-                viewHolder.itemBinding.favouriteStar.setImageResource(favStatusMap.get(movie.getId()) ? R.drawable.ic_like : R.drawable.ic_dislike);
+                    viewHolder.itemBinding.favouriteStar.setImageResource(favStatusMap.get(movie.getId()) ? R.drawable.ic_like : R.drawable.ic_dislike);
             });
         }
 

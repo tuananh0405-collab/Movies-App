@@ -7,14 +7,17 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
+import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -107,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
             if (count > 0) {
                 if (favoriteTab != null) {
                     BadgeDrawable badge = favoriteTab.getOrCreateBadge();
-                    if (count > 0) {
+                    if (count >= 0) {
                         badge.setVisible(true);
                         badge.setNumber(count);
                     } else {
@@ -175,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
         profileViewModel.getUserProfileLiveData().observe(this, userProfile -> {
             if (userProfile != null) {
                 navHeaderBinding.setProfile(userProfile);
-            }else {
+            } else {
                 navHeaderBinding.setProfile(new UserProfile("null", "null", "null", "null", "unknown"));
             }
         });
@@ -197,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements Observer<NavContr
             int movieId = intent.getIntExtra("movieId", -1);
             if (movieId != -1) {
                 reminderViewModel.deleteReminderByMovieId(movieId);
-                reminderViewModel.updateReminderInfo(movieId,"");
+                reminderViewModel.updateReminderInfo(movieId, "");
                 movieViewModel.setNotifyMovieId(movieId);
 
                 WorkManager.getInstance(context).cancelAllWorkByTag(String.valueOf(movieId));

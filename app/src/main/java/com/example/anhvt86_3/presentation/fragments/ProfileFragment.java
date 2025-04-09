@@ -122,10 +122,10 @@ public class ProfileFragment extends Fragment {
 //            binding.setUserProfile(new UserProfile("name", "email", "birthday", "profileImage", "male"));
 //        }
 
-//        binding.setUserProfile(viewModel.getUserProfileLiveData().getValue());
+        binding.setUserProfile(viewModel.getUserProfileLiveData().getValue());
         if (binding.getUserProfile() != null){
 
-        Log.e("Gender", binding.getUserProfile().getGender());
+//        Log.e("Gender", binding.getUserProfile().getGender());
         binding.cameraBtn.setOnClickListener(v -> {
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {

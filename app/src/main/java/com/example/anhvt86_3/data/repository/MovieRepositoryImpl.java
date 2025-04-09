@@ -34,11 +34,11 @@ import kotlinx.coroutines.CoroutineScope;
 public class MovieRepositoryImpl implements IMovieRepository {
 
     private final PagingConfig pagingConfig = new PagingConfig(
-            5,
+            20,
             5,
             false,
             10,
-            5 + 2 * 5
+            100
     );
     private MovieDAO mMovieDAO;
     private List<MovieEntity> favoriteMovies = new ArrayList<>();
@@ -55,6 +55,7 @@ public class MovieRepositoryImpl implements IMovieRepository {
         mMovieDAO.getAllMovies().observeForever(favMovies -> {
             if (favMovies != null) {
                 favoriteMovies = favMovies;
+                movieRemoteDataSourceProvider.get().setFavoriteMovies(favoriteMovies);
             }
         });
 
@@ -63,6 +64,7 @@ public class MovieRepositoryImpl implements IMovieRepository {
     @Override
     public Flowable<PagingData<Movie>> getMoviesFromAPI(CoroutineScope viewModelScope, Settings settings) {
         movieRemoteDataSourceProvider.get().setSettings(settings);
+        movieRemoteDataSourceProvider.get().setFavoriteMovies(favoriteMovies);
         Flowable<PagingData<Movie>> cachedInFlowable = PagingRx.cachedIn(
                 PagingRx.getFlowable(new Pager<>(pagingConfig, movieRemoteDataSourceProvider::get)),
                 viewModelScope

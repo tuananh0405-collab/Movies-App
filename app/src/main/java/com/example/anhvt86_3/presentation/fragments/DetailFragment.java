@@ -80,15 +80,15 @@ public class DetailFragment extends Fragment {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 String formattedDateTime = localDateTime.format(formatter);
                 binding.tvReminderInfo.setText(formattedDateTime);
-                Log.e("info", "change");
+                Log.e("info", formattedDateTime);
             }else {
-                binding.tvReminderInfo.setText("");
+//                binding.tvReminderInfo.setText("");
             }
         });
         movieViewModel.getNotifyMovieId().observe(getViewLifecycleOwner(), movieId -> {
             if (movieId != -1) {
                 binding.tvReminderInfo.setText("");
-                movieViewModel.setNotifyMovieId(-1);
+//                movieViewModel.setNotifyMovieId(-1);
 
             }
         });
@@ -165,6 +165,8 @@ public class DetailFragment extends Fragment {
             new TimePickerDialog(getContext(), (view1, hourOfDay, minute) -> {
                 date.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 date.set(Calendar.MINUTE, minute);
+                date.set(Calendar.SECOND, 0);  // Đặt giây về 0
+                date.set(Calendar.MILLISECOND, 0);  // Đặt mili giây về 0
                 scheduleReminder(date.getTimeInMillis());
             }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
         }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH)).show();

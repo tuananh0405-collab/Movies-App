@@ -23,8 +23,8 @@ public class ProfileViewModel extends ViewModel {
     @Inject
     public ProfileViewModel(UserRepository userRepository) {
         userProfileUseCase = new UserProfileUseCase(userRepository);
-//        UserProfile userProfile = new UserProfile("name", "email", "birthday", "profileImage", "male");
-//        userProfileUseCase.saveUserProfile("anh", userProfile);
+        UserProfile userProfile = new UserProfile("name", "email", "birthday", "profileImage", "male");
+        userProfileUseCase.saveUserProfile("anh", userProfile);
         fetchUserProfile("anh");
     }
 
